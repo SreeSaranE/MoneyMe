@@ -1,5 +1,7 @@
+using System.ComponentModel.DataAnnotations;
 namespace API.Dtos;
 
 public record CreateCashDto (
-    string Name,
+    [Required] string Name,
+    [Required] string Category,
     string Description);
