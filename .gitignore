@@ -85,3 +85,22 @@ Thumbs.db
 
 *.swp
 *.swo
+
+
+# db
+# SQLite databases
+*.db
+*.db3
+*.sqlite
+*.sqlite3
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+
+# Data directory
+Data/Migrations
+
+# Local .NET tools manifest (if you don't want to track it)
+dotnet-tools.json
