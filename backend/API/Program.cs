@@ -4,9 +4,7 @@ using API.Endpoints;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidation();
-
-var connectionString = "Data Source=TransactionStore.db";
-builder.Services.AddSqlite<CashStoreContext>(connectionString);
+builder.AddCashStoreDb();
 
 var app = builder.Build();
 
