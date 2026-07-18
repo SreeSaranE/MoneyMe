@@ -1,4 +1,7 @@
+using API.Data;
 using API.Dtos;
+using API.Models;
+
 namespace API.Endpoints;
 
 public static class AppEndpoints
@@ -28,16 +31,26 @@ public static class AppEndpoints
             return trans is null ? Results.NotFound() : Results.Ok(trans);
         }).WithName(GetCashEndpoint);
 
-        app.MapPost("/add", (CreateCashDto newCash) =>
+        app.MapPost("/add", (CreateCashDto newCash, CashStoreContext context) =>
         {
-            CashDto transaction = new(
-                Transactions.Count + 1,
-                newCash.Name,
-                newCash.Category,
-                newCash.Description
+            Transaction transaction = new()
+            {
+                Name = newCash.Name,
+                CategoryId = newCash.CategoryId,
+                Description = newCash.Description
+            };
+            context.Add(transaction);
+            context.SaveChanges();
+
+            CashDetailsDto CashDto = new(
+                transaction.Id,
+                transaction.Name,
+                transaction.CategoryId,
+                transaction.Description
             );
-            Transactions.Add(transaction);
-            return Results.CreatedAtRoute(GetCashEndpoint, new { id = transaction.Id }, transaction);
+            
+            
+            return Results.CreatedAtRoute(GetCashEndpoint, new { id = CashDto.Id }, CashDto);
         });
 
         app.MapPut("/update/{id}", (int id, UpdateCashDto updateCash) =>

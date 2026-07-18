@@ -3,5 +3,5 @@ namespace API.Dtos;
 
 public record CreateCashDto (
     [Required] string Name,
-    [Required] string Category,
+    [Range(1,10)] int CategoryId,
     string Description);
