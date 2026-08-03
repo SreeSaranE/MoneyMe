@@ -9,6 +9,7 @@ builder.AddCashStoreDb();
 var app = builder.Build();
 
 app.MapCashEndpoints();
+app.MapCategoryEndpoints();
 
 app.MigrateDb();
 
