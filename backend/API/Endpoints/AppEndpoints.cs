@@ -1,19 +1,12 @@
 using API.Data;
 using API.Dtos;
 using API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Endpoints;
 
 public static class AppEndpoints
 {
-    private static readonly List<CashDto> Transactions =
-    [
-        new (1, "Jothi", "PocketMoney", ""),
-        new (2, "Elango", "PocketMoney", ""),
-        new (3, "Bakery", "Snacks", ""),
-        new (4, "Hotel", "Food", ""),
-        new (5, "Shop", "Stationary", "")
-    ];
     
     private const string GetCashEndpoint = "GetTransaction";
 
@@ -21,17 +14,32 @@ public static class AppEndpoints
     {
         var group = app.MapGroup("cash");
         
-        app.MapGet("/", () => "Welcome to MoneyMe");
+        group.MapGet("/", () => "Welcome to MoneyMe");
 
-        group.MapGet("/transactions", () => Transactions);
+        group.MapGet("/transactions", async (CashStoreContext context) =>
+            await context.Transactions
+                .Include(t => t.Category)
+                .Select(transaction => new CashDto(
+                    transaction.Id,
+                    transaction.Name,
+                    transaction.Category!.CategoryName,
+                    transaction.Description))
+                .AsNoTracking()
+                .ToListAsync());
 
-        app.MapGet("/transaction/{id}", (int id) =>
+        group.MapGet("/transaction/{id}", async (int id, CashStoreContext context) =>
         {
-            var trans = Transactions.Find((transactions => transactions.Id == id));
-            return trans is null ? Results.NotFound() : Results.Ok(trans);
+            var transaition = await context.Transactions.FindAsync(id);
+            
+            return transaition is null ? Results.NotFound() : Results.Ok(new CashDetailsDto(
+                transaition.Id,
+                transaition.Name,
+                transaition.CategoryId,
+                transaition.Description
+            ));
         }).WithName(GetCashEndpoint);
 
-        app.MapPost("/add", (CreateCashDto newCash, CashStoreContext context) =>
+        group.MapPost("/add", async (CreateCashDto newCash, CashStoreContext context) =>
         {
             Transaction transaction = new()
             {
@@ -40,7 +48,7 @@ public static class AppEndpoints
                 Description = newCash.Description
             };
             context.Add(transaction);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             CashDetailsDto CashDto = new(
                 transaction.Id,
@@ -48,28 +56,31 @@ public static class AppEndpoints
                 transaction.CategoryId,
                 transaction.Description
             );
-            
-            
+
             return Results.CreatedAtRoute(GetCashEndpoint, new { id = CashDto.Id }, CashDto);
         });
 
-        app.MapPut("/update/{id}", (int id, UpdateCashDto updateCash) =>
+        group.MapPut("/update/{id}", async (int id, UpdateCashDto updateCash, CashStoreContext context) =>
         {
-            var index = Transactions.FindIndex(t => t.Id == id);
-            if (index == -1) return Results.NotFound();
-    
-            Transactions[index] = new CashDto(
-                id,
-                updateCash.Name,
-                updateCash.Category,
-                updateCash.Description);
+            // var index = Transactions.FindIndex(t => t.Id == id);
+            var existingTransaction = await context.Transactions.FindAsync(id);
+            if (existingTransaction == null) return Results.NotFound();
+            
+            existingTransaction.Name = updateCash.Name;
+            existingTransaction.CategoryId = updateCash.CategoryId;
+            existingTransaction.Description = updateCash.Description;
+            
+            await context.SaveChangesAsync();
     
             return Results.Ok("Updated Cash");
         });
 
-        app.MapPut("/delete/{id}", (int id) =>
+        group.MapPut("/delete/{id}", async (int id, CashStoreContext context) =>
         {
-            Transactions.RemoveAll(t => t.Id == id);
+            await context.Transactions
+                .Where(c => c.Id == id)
+                .ExecuteDeleteAsync();
+            
             return Results.Ok("Deleted Transaction");
         });
     }

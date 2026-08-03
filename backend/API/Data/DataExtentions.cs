@@ -5,7 +5,7 @@ namespace API.Data;
 
 public static class DataExtentions
 {
-    // Use to create DB on the application when it isn't available
+    // Use to create DB on application startup when it isn't available
     public static void MigrateDb(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
