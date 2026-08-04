@@ -1,39 +1,54 @@
-using Data.Models;
 using Data.DbContext;
+using Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Extentions;
+namespace API.Extensions;
 
-public static class DataExtentions
+public static class DataExtensions
 {
-    // Use to create DB on application startup when it isn't available
+    /// <summary>
+    /// Configures the SQLite database and registers the DbContext.
+    /// </summary>
+    public static void AddCashStoreDb(this WebApplicationBuilder builder)
+    {
+        var apiRoot = builder.Environment.ContentRootPath;
+        var solutionRoot = Directory.GetParent(apiRoot)!.FullName;
+
+        var databaseFolder = Path.Combine(solutionRoot, "Database");
+        Directory.CreateDirectory(databaseFolder);
+
+        var fileName = builder.Configuration["Database:FileName"] ?? "TransactionStore.db";
+        var databasePath = Path.Combine(databaseFolder, fileName);
+
+        var connectionString = $"Data Source={databasePath}";
+
+        builder.Services.AddDbContext<CashStoreContext>(options =>
+            options.UseSqlite(connectionString));
+    }
+
+    /// <summary>
+    /// Applies pending migrations and seeds the database.
+    /// </summary>
     public static void MigrateDb(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider
-            .GetRequiredService<CashStoreContext>();
-        
-        dbContext.Database.Migrate();
-    }
 
-    public static void AddCashStoreDb(this WebApplicationBuilder builder)
-    {
-        var connectionString = builder.Configuration.GetConnectionString("CashStore");
-        builder.Services.AddSqlite<CashStoreContext>(
-            connectionString,
-            optionsAction: options => options.UseSeeding((context, _) =>
-            {
-                if (!context.Set<Category>().Any())
-                {
-                    context.Set<Category>().AddRange(
-                        new Category { CategoryName = "PocketMoney"},
-                        new Category { CategoryName = "Food"},
-                        new Category { CategoryName = "Snacks"},
-                        new Category { CategoryName = "Grooming"}
-                    );
-                    context.SaveChanges();
-                }
-            })
-        );
+        var db = scope.ServiceProvider.GetRequiredService<CashStoreContext>();
+
+        // Apply all pending migrations
+        db.Database.EnsureCreated();
+
+        // Seed default categories
+        if (!db.Categories.Any())
+        {
+            db.Categories.AddRange(
+                new Category { CategoryName = "PocketMoney" },
+                new Category { CategoryName = "Food" },
+                new Category { CategoryName = "Snacks" },
+                new Category { CategoryName = "Grooming" }
+            );
+
+            db.SaveChanges();
+        }
     }
 }

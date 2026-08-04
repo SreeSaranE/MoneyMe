@@ -1,6 +1,6 @@
-using Data;
 using API.Endpoints;
-using API.Extentions;
+using API.Extensions;
+using Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +9,11 @@ builder.AddCashStoreDb();
 
 var app = builder.Build();
 
+// Initialize database
+app.MigrateDb();
+
+// Map endpoints
 app.MapCashEndpoints();
 app.MapCategoryEndpoints();
-
-app.MigrateDb();
 
 app.Run();
