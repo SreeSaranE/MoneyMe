@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-namespace API.Dtos;
+namespace Data.Dtos;
 
 public record CreateCashDto (
     [Required] string Name,

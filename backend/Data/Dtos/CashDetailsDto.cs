@@ -1,4 +1,4 @@
-namespace API.Dtos;
+namespace Data.Dtos;
 
 public record CashDetailsDto(
     int Id,

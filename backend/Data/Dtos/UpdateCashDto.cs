@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace API.Dtos;
+namespace Data.Dtos;
 
 public record UpdateCashDto(
     [Required] string Name,

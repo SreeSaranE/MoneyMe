@@ -1,7 +1,8 @@
-using API.Models;
+using Data.Models;
+using Data.DbContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data;
+namespace API.Extentions;
 
 public static class DataExtentions
 {

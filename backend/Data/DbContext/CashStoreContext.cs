@@ -1,10 +1,10 @@
-using API.Models;
+using Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data;
+namespace Data.DbContext;
 
 public class CashStoreContext(DbContextOptions<CashStoreContext> options):
-    DbContext(options)
+    Microsoft.EntityFrameworkCore.DbContext(options)
 {
     public DbSet<Transaction> Transactions => Set<Transaction>();
 

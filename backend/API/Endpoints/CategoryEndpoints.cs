@@ -1,5 +1,6 @@
-using API.Data;
-using API.Dtos;
+using Data.Models;
+using Data.Dtos;
+using Data.DbContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Endpoints;
