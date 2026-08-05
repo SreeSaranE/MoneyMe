@@ -1,13 +1,13 @@
 using Data.Models;
 using Data.Dtos;
 using Data.DbContext;
+using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Endpoints;
 
 public static class AppEndpoints
 {
-    
     private const string GetCashEndpoint = "GetTransaction";
 
     public static void MapCashEndpoints(this WebApplication app)
@@ -16,71 +16,41 @@ public static class AppEndpoints
         
         group.MapGet("/", () => "Welcome to MoneyMe");
 
-        group.MapGet("/transactions", async (CashStoreContext context) =>
-            await context.Transactions
-                .Include(t => t.Category)
-                .Select(transaction => new CashDto(
-                    transaction.Id,
-                    transaction.Name,
-                    transaction.Category!.CategoryName,
-                    transaction.Description))
-                .AsNoTracking()
-                .ToListAsync());
+        group.MapGet("/transactions", async (ITransactionRepository repository) =>
+            await repository.GetAllTransaction());
 
-        group.MapGet("/transaction/{id}", async (int id, CashStoreContext context) =>
+        //---------------------------
+        group.MapGet("/transaction/{transactionId}", async (int transactionId, ITransactionRepository repository) =>
         {
-            var transaition = await context.Transactions.FindAsync(id);
+            var transaition = await repository.GetTransactionById(transactionId);
             
-            return transaition is null ? Results.NotFound() : Results.Ok(new CashDetailsDto(
-                transaition.Id,
-                transaition.Name,
-                transaition.CategoryId,
-                transaition.Description
-            ));
+            return transaition is null ? Results.NotFound() : Results.Ok(transaition);
         }).WithName(GetCashEndpoint);
-
-        group.MapPost("/add", async (CreateCashDto newCash, CashStoreContext context) =>
+        
+        //---------------------------
+        group.MapPost("/add", async (CreateCashDto newTransaction, ITransactionRepository repository) =>
         {
-            Transaction transaction = new()
-            {
-                Name = newCash.Name,
-                CategoryId = newCash.CategoryId,
-                Description = newCash.Description
-            };
-            context.Add(transaction);
-            await context.SaveChangesAsync();
-
-            CashDetailsDto CashDto = new(
-                transaction.Id,
-                transaction.Name,
-                transaction.CategoryId,
-                transaction.Description
-            );
-
-            return Results.CreatedAtRoute(GetCashEndpoint, new { id = CashDto.Id }, CashDto);
+            var addResult = await repository.AddTransaction(newTransaction);
+            
+            return Results.CreatedAtRoute(
+                GetCashEndpoint,
+                new { transactionId = addResult.Id },
+                addResult);
         });
 
-        group.MapPut("/update/{id}", async (int id, UpdateCashDto updateCash, CashStoreContext context) =>
+        //---------------------------
+        group.MapPut("/update/{transactionId}", async (int transactionId, UpdateCashDto updateCash, ITransactionRepository repository) =>
         {
-            // var index = Transactions.FindIndex(t => t.Id == id);
-            var existingTransaction = await context.Transactions.FindAsync(id);
-            if (existingTransaction == null) return Results.NotFound();
+            var updateResult = await repository.UpdateTransaction(transactionId,  updateCash);
             
-            existingTransaction.Name = updateCash.Name;
-            existingTransaction.CategoryId = updateCash.CategoryId;
-            existingTransaction.Description = updateCash.Description;
-            
-            await context.SaveChangesAsync();
-    
+            if (updateResult == false) return Results.NotFound();
             return Results.Ok("Updated Cash");
         });
 
-        group.MapPut("/delete/{id}", async (int id, CashStoreContext context) =>
+        //---------------------------
+        group.MapPut("/delete/{id}", async (int id, ITransactionRepository repository) =>
         {
-            await context.Transactions
-                .Where(c => c.Id == id)
-                .ExecuteDeleteAsync();
-            
+            await repository.DeleteTransaction(id);
             return Results.Ok("Deleted Transaction");
         });
     }

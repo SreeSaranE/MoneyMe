@@ -1,7 +1,5 @@
-using Data.Models;
-using Data.Dtos;
-using Data.DbContext;
-using Microsoft.EntityFrameworkCore;
+using Data.Interfaces;
+
 
 namespace API.Endpoints;
 
@@ -11,13 +9,10 @@ public static class CategoryEndpoints
     {
         var group = app.MapGroup("categories");
 
-        group.MapGet("/", async (CashStoreContext context) =>
-            await context.Categories
-                .Select(category => new CategoryDto(
-                    category.CategoryId,
-                    category.CategoryName))
-                .AsNoTracking()
-                .ToListAsync()
+        group.MapGet("/", async (ICategoryRepository repository) =>
+            {
+                return await repository.GetCategories();
+            }
         );
     }
 }
