@@ -1,4 +1,5 @@
 using Data.Interfaces;
+using Service.Interfaces;
 
 
 namespace API.Endpoints;
@@ -9,9 +10,9 @@ public static class CategoryEndpoints
     {
         var group = app.MapGroup("categories");
 
-        group.MapGet("/", async (ICategoryRepository repository) =>
+        group.MapGet("/", async (ICategoryService service) =>
             {
-                return await repository.GetCategories();
+                return await service.GetCategories();
             }
         );
     }

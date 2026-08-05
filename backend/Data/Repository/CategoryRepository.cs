@@ -4,7 +4,7 @@ using Data.Interfaces;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Services;
+namespace Data.Repository;
 
 public class CategoryRepository: ICategoryRepository
 {

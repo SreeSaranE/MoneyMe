@@ -1,0 +1,41 @@
+using Data.Dtos;
+using Data.Interfaces;
+using Service.Interfaces;
+
+namespace Service.Services;
+
+public class TransactionService: ITransactionService
+{
+    private readonly ITransactionRepository _transactionRepository;
+    public  TransactionService(ITransactionRepository transactionRepository)
+    {
+        _transactionRepository = transactionRepository;
+    }
+
+    public async Task<List<CashDto>> GetAllTransaction()
+    {
+        return await _transactionRepository.GetAllTransaction();
+    }
+
+    public async Task<CashDto?> GetTransactionById(int transactionId)
+    {
+        return await _transactionRepository.GetTransactionById(transactionId);
+    }
+
+    public async Task<CashDto> AddTransaction(CreateCashDto newTransaction)
+    {
+        var createdTransaction = await _transactionRepository
+            .AddTransaction(newTransaction);
+        return createdTransaction;
+    }
+
+    public async Task<bool> UpdateTransaction(int transactionId, UpdateCashDto updatedTransaction)
+    {
+        return await _transactionRepository.UpdateTransaction(transactionId, updatedTransaction);
+    }
+
+    public async Task DeleteTransaction(int transactionId)
+    {
+        await _transactionRepository.DeleteTransaction(transactionId);
+    }
+}

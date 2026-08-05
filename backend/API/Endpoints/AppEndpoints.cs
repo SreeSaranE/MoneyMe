@@ -3,6 +3,7 @@ using Data.Dtos;
 using Data.DbContext;
 using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Service.Interfaces;
 
 namespace API.Endpoints;
 
@@ -16,21 +17,21 @@ public static class AppEndpoints
         
         group.MapGet("/", () => "Welcome to MoneyMe");
 
-        group.MapGet("/transactions", async (ITransactionRepository repository) =>
-            await repository.GetAllTransaction());
+        group.MapGet("/transactions", async (ITransactionService _service) =>
+            await _service.GetAllTransaction());
 
         //---------------------------
-        group.MapGet("/transaction/{transactionId}", async (int transactionId, ITransactionRepository repository) =>
+        group.MapGet("/transaction/{transactionId}", async (int transactionId, ITransactionService _service) =>
         {
-            var transaition = await repository.GetTransactionById(transactionId);
+            var transaition = await _service.GetTransactionById(transactionId);
             
             return transaition is null ? Results.NotFound() : Results.Ok(transaition);
         }).WithName(GetCashEndpoint);
         
         //---------------------------
-        group.MapPost("/add", async (CreateCashDto newTransaction, ITransactionRepository repository) =>
+        group.MapPost("/add", async (CreateCashDto newTransaction, ITransactionService _service) =>
         {
-            var addResult = await repository.AddTransaction(newTransaction);
+            var addResult = await _service.AddTransaction(newTransaction);
             
             return Results.CreatedAtRoute(
                 GetCashEndpoint,
@@ -39,18 +40,18 @@ public static class AppEndpoints
         });
 
         //---------------------------
-        group.MapPut("/update/{transactionId}", async (int transactionId, UpdateCashDto updateCash, ITransactionRepository repository) =>
+        group.MapPut("/update/{transactionId}", async (int transactionId, UpdateCashDto updateCash, ITransactionService _service) =>
         {
-            var updateResult = await repository.UpdateTransaction(transactionId,  updateCash);
+            var updateResult = await _service.UpdateTransaction(transactionId,  updateCash);
             
             if (updateResult == false) return Results.NotFound();
             return Results.Ok("Updated Cash");
         });
 
         //---------------------------
-        group.MapPut("/delete/{id}", async (int id, ITransactionRepository repository) =>
+        group.MapPut("/delete/{id}", async (int id, ITransactionService _service) =>
         {
-            await repository.DeleteTransaction(id);
+            await _service.DeleteTransaction(id);
             return Results.Ok("Deleted Transaction");
         });
     }

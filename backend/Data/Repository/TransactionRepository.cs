@@ -4,7 +4,7 @@ using Data.Interfaces;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Services;
+namespace Data.Repository;
 
 public class TransactionRepository: ITransactionRepository
 {
@@ -57,6 +57,7 @@ public class TransactionRepository: ITransactionRepository
 
         var createdTransaction = await _context.Transactions
             .Include(t => t.Category)
+            .Where(t => t.Id == transaction.Id)
             .Select(t => new CashDto(
                 t.Id,
                 t.Name,
