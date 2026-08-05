@@ -1,6 +1,4 @@
-using Data.Interfaces;
 using Service.Interfaces;
-
 
 namespace API.Endpoints;
 

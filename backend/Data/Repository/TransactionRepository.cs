@@ -15,11 +15,11 @@ public class TransactionRepository: ITransactionRepository
         _context = context;
     }
 
-    public async Task<List<CashDto>> GetAllTransaction()
+    public async Task<List<TransactionDto>> GetAllTransaction()
     {
         return await  _context.Transactions
             .Include(t => t.Category)
-            .Select(transaction => new CashDto(
+            .Select(transaction => new TransactionDto(
                 transaction.Id,
                 transaction.Name,
                 transaction.Category!.CategoryName,
@@ -28,7 +28,7 @@ public class TransactionRepository: ITransactionRepository
             .ToListAsync();
     }
 
-    public async Task<CashDto?> GetTransactionById(int transactionId)
+    public async Task<TransactionDto?> GetTransactionById(int transactionId)
     {
         var transaction = await _context.Transactions
             .Include(t => t.Category)
@@ -36,14 +36,14 @@ public class TransactionRepository: ITransactionRepository
         
         if (transaction == null) return null;
         
-        return new CashDto(
+        return new TransactionDto(
             transaction.Id,
             transaction.Name,
             transaction.Category!.CategoryName,
             transaction.Description);
     }
 
-    public async Task<CashDto> AddTransaction(CreateCashDto newTransaction)
+    public async Task<TransactionDto> AddTransaction(CreateTransactionDto newTransaction)
     {
         Transaction transaction = new()
         {
@@ -58,7 +58,7 @@ public class TransactionRepository: ITransactionRepository
         var createdTransaction = await _context.Transactions
             .Include(t => t.Category)
             .Where(t => t.Id == transaction.Id)
-            .Select(t => new CashDto(
+            .Select(t => new TransactionDto(
                 t.Id,
                 t.Name,
                 t.Category!.CategoryName,
@@ -68,7 +68,7 @@ public class TransactionRepository: ITransactionRepository
         return createdTransaction;
     }
 
-    public async Task<bool> UpdateTransaction(int transactionId, UpdateCashDto updatedTransaction)
+    public async Task<bool> UpdateTransaction(int transactionId, UpdateTransationDto updatedTransaction)
     {
         var existingTransaction = await _context.Transactions.FindAsync(transactionId);
         if (existingTransaction == null) return false;

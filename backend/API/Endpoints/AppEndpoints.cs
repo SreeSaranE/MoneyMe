@@ -1,8 +1,4 @@
-using Data.Models;
 using Data.Dtos;
-using Data.DbContext;
-using Data.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Service.Interfaces;
 
 namespace API.Endpoints;
@@ -21,7 +17,9 @@ public static class AppEndpoints
             await _service.GetAllTransaction());
 
         //---------------------------
-        group.MapGet("/transaction/{transactionId}", async (int transactionId, ITransactionService _service) =>
+        group.MapGet("/transaction/{transactionId}", async (
+            int transactionId,
+            ITransactionService _service) =>
         {
             var transaition = await _service.GetTransactionById(transactionId);
             
@@ -29,7 +27,9 @@ public static class AppEndpoints
         }).WithName(GetCashEndpoint);
         
         //---------------------------
-        group.MapPost("/add", async (CreateCashDto newTransaction, ITransactionService _service) =>
+        group.MapPost("/add", async (
+            CreateTransactionDto newTransaction,
+            ITransactionService _service) =>
         {
             var addResult = await _service.AddTransaction(newTransaction);
             
@@ -40,7 +40,10 @@ public static class AppEndpoints
         });
 
         //---------------------------
-        group.MapPut("/update/{transactionId}", async (int transactionId, UpdateCashDto updateCash, ITransactionService _service) =>
+        group.MapPut("/update/{transactionId}", async (
+            int transactionId,
+            UpdateTransationDto updateCash,
+            ITransactionService _service) =>
         {
             var updateResult = await _service.UpdateTransaction(transactionId,  updateCash);
             
@@ -49,9 +52,11 @@ public static class AppEndpoints
         });
 
         //---------------------------
-        group.MapPut("/delete/{id}", async (int id, ITransactionService _service) =>
+        group.MapPut("/delete/{transactionId}", async (
+            int transactionId,
+            ITransactionService _service) =>
         {
-            await _service.DeleteTransaction(id);
+            await _service.DeleteTransaction(transactionId);
             return Results.Ok("Deleted Transaction");
         });
     }

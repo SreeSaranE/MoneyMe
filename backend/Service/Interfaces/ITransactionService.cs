@@ -4,13 +4,13 @@ namespace Service.Interfaces;
 
 public interface ITransactionService
 {
-    Task<List<CashDto>> GetAllTransaction();
+    Task<List<TransactionDto>> GetAllTransaction();
 
-    Task<CashDto?> GetTransactionById(int transactionId);
+    Task<TransactionDto?> GetTransactionById(int transactionId);
 
-    Task<CashDto> AddTransaction(CreateCashDto newTransaction);
+    Task<TransactionDto> AddTransaction(CreateTransactionDto newTransaction);
 
-    Task<bool> UpdateTransaction(int transactionId, UpdateCashDto updatedTransaction);
+    Task<bool> UpdateTransaction(int transactionId, UpdateTransationDto updatedTransaction);
     
     Task DeleteTransaction(int transactionId);
 }

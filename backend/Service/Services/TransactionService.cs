@@ -12,24 +12,24 @@ public class TransactionService: ITransactionService
         _transactionRepository = transactionRepository;
     }
 
-    public async Task<List<CashDto>> GetAllTransaction()
+    public async Task<List<TransactionDto>> GetAllTransaction()
     {
         return await _transactionRepository.GetAllTransaction();
     }
 
-    public async Task<CashDto?> GetTransactionById(int transactionId)
+    public async Task<TransactionDto?> GetTransactionById(int transactionId)
     {
         return await _transactionRepository.GetTransactionById(transactionId);
     }
 
-    public async Task<CashDto> AddTransaction(CreateCashDto newTransaction)
+    public async Task<TransactionDto> AddTransaction(CreateTransactionDto newTransaction)
     {
         var createdTransaction = await _transactionRepository
             .AddTransaction(newTransaction);
         return createdTransaction;
     }
 
-    public async Task<bool> UpdateTransaction(int transactionId, UpdateCashDto updatedTransaction)
+    public async Task<bool> UpdateTransaction(int transactionId, UpdateTransationDto updatedTransaction)
     {
         return await _transactionRepository.UpdateTransaction(transactionId, updatedTransaction);
     }

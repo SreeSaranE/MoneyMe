@@ -1,8 +1,8 @@
 namespace Data.Dtos;
 
-public record CashDetailsDto(
+public record TransactionDto(
     int Id,
     string Name,
-    int Category,
+    string Category,
     string Description
 );

@@ -1,6 +1,5 @@
 using Data.Dtos;
 using Data.Interfaces;
-using Data.Models;
 using Service.Interfaces;
 
 namespace Service.Services;
