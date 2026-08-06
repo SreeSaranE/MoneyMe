@@ -18,7 +18,7 @@ public static class AppEndpoints
 
         //---------------------------
         group.MapGet("/transaction/{transactionId}", async (
-            int transactionId,
+            Guid transactionId,
             ITransactionService service) =>
         {
             var transaition = await service.GetTransactionById(transactionId);
@@ -35,13 +35,13 @@ public static class AppEndpoints
             
             return Results.CreatedAtRoute(
                 GetCashEndpoint,
-                new { transactionId = addResult.Id },
+                new { transactionId = addResult.TransactionId },
                 addResult);
         });
 
         //---------------------------
         group.MapPut("/update/{transactionId}", async (
-            int transactionId,
+            Guid transactionId,
             UpdateTransationDto updateCash,
             ITransactionService service) =>
         {
@@ -53,7 +53,7 @@ public static class AppEndpoints
 
         //---------------------------
         group.MapPut("/delete/{transactionId}", async (
-            int transactionId,
+            Guid transactionId,
             ITransactionService service) =>
         {
             await service.DeleteTransaction(transactionId);

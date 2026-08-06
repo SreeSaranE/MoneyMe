@@ -6,13 +6,13 @@ public interface ITransactionRepository
 {
     Task<List<TransactionDto>> GetAllTransaction();
 
-    Task<TransactionDto?> GetTransactionById(int transactionId);
+    Task<TransactionDto?> GetTransactionById(Guid transactionId);
 
     Task<TransactionDto> AddTransaction(CreateTransactionDto newTransaction);
 
-    Task<bool> UpdateTransaction(int transactionId, UpdateTransationDto updatedTransaction);
+    Task<bool> UpdateTransaction(Guid transactionId, UpdateTransationDto updatedTransaction);
 
-    Task DeleteTransaction(int transactionId);
+    Task DeleteTransaction(Guid transactionId);
 
     Task<List<TransactionDto>> GetTransactionByCategory(int categoryId);
 }

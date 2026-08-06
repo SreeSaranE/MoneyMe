@@ -2,11 +2,18 @@ namespace Data.Models;
 
 public class Transaction
 {
-    public int Id { get; set; }
-    public required string Name {get; set;}
-    public Category? Category {get; set;}
-    public string Description {get; set;} = string.Empty;
+    public Guid TransactionId { get; set; } = Guid.NewGuid();
+
+    public required string TransactionName { get; set; }
     
-    //foriegn
-    public int CategoryId {get; set;}
+    public decimal Amount { get; set; }
+
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+
+    public Category? Category { get; set; }
+
+    public string Description { get; set; } = string.Empty;
+
+    // Foreign Key
+    public int CategoryId { get; set; }
 }

@@ -1,8 +1,10 @@
 namespace Data.Dtos;
 
 public record TransactionDto(
-    int Id,
-    string Name,
+    Guid TransactionId,
+    string TransactionName,
+    decimal Amount,
+    DateTime Timestamp,
     string Category,
     string Description
 );

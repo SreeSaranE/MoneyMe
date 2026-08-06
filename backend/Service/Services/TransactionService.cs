@@ -17,7 +17,7 @@ public class TransactionService: ITransactionService
         return await _transactionRepository.GetAllTransaction();
     }
 
-    public async Task<TransactionDto?> GetTransactionById(int transactionId)
+    public async Task<TransactionDto?> GetTransactionById(Guid transactionId)
     {
         return await _transactionRepository.GetTransactionById(transactionId);
     }
@@ -29,12 +29,12 @@ public class TransactionService: ITransactionService
         return createdTransaction;
     }
 
-    public async Task<bool> UpdateTransaction(int transactionId, UpdateTransationDto updatedTransaction)
+    public async Task<bool> UpdateTransaction(Guid transactionId, UpdateTransationDto updatedTransaction)
     {
         return await _transactionRepository.UpdateTransaction(transactionId, updatedTransaction);
     }
 
-    public async Task DeleteTransaction(int transactionId)
+    public async Task DeleteTransaction(Guid transactionId)
     {
         await _transactionRepository.DeleteTransaction(transactionId);
     }

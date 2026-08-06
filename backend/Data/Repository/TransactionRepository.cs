@@ -20,25 +20,29 @@ public class TransactionRepository: ITransactionRepository
         return await  _context.Transactions
             .Include(t => t.Category)
             .Select(transaction => new TransactionDto(
-                transaction.Id,
-                transaction.Name,
+                transaction.TransactionId,
+                transaction.TransactionName,
+                transaction.Amount,
+                transaction.Timestamp,
                 transaction.Category!.CategoryName,
                 transaction.Description))
             .AsNoTracking()
             .ToListAsync();
     }
 
-    public async Task<TransactionDto?> GetTransactionById(int transactionId)
+    public async Task<TransactionDto?> GetTransactionById(Guid transactionId)
     {
         var transaction = await _context.Transactions
             .Include(t => t.Category)
-            .FirstOrDefaultAsync(t => t.Id == transactionId);
+            .FirstOrDefaultAsync(t => t.TransactionId == transactionId);
         
         if (transaction == null) return null;
         
         return new TransactionDto(
-            transaction.Id,
-            transaction.Name,
+            transaction.TransactionId,
+            transaction.TransactionName,
+            transaction.Amount,
+            transaction.Timestamp,
             transaction.Category!.CategoryName,
             transaction.Description);
     }
@@ -47,7 +51,9 @@ public class TransactionRepository: ITransactionRepository
     {
         Transaction transaction = new()
         {
-            Name = newTransaction.Name,
+            TransactionName = newTransaction.TransactionName,
+            Amount =  newTransaction.Amount,
+            Timestamp = newTransaction.Timestamp,
             CategoryId = newTransaction.CategoryId,
             Description = newTransaction.Description,
         };
@@ -57,10 +63,12 @@ public class TransactionRepository: ITransactionRepository
 
         var createdTransaction = await _context.Transactions
             .Include(t => t.Category)
-            .Where(t => t.Id == transaction.Id)
+            .Where(t => t.TransactionId == transaction.TransactionId)
             .Select(t => new TransactionDto(
-                t.Id,
-                t.Name,
+                t.TransactionId,
+                t.TransactionName,
+                t.Amount,
+                t.Timestamp,
                 t.Category!.CategoryName,
                 t.Description))
             .FirstAsync();
@@ -68,12 +76,12 @@ public class TransactionRepository: ITransactionRepository
         return createdTransaction;
     }
 
-    public async Task<bool> UpdateTransaction(int transactionId, UpdateTransationDto updatedTransaction)
+    public async Task<bool> UpdateTransaction(Guid transactionId, UpdateTransationDto updatedTransaction)
     {
         var existingTransaction = await _context.Transactions.FindAsync(transactionId);
         if (existingTransaction == null) return false;
         
-        existingTransaction.Name = updatedTransaction.Name;
+        existingTransaction.TransactionName = updatedTransaction.TransactionName;
         existingTransaction.CategoryId = updatedTransaction.CategoryId;
         existingTransaction.Description = updatedTransaction.Description;
         
@@ -81,10 +89,10 @@ public class TransactionRepository: ITransactionRepository
         return true;
     }
 
-    public async Task DeleteTransaction(int transactionId)
+    public async Task DeleteTransaction(Guid transactionId)
     {
         await _context.Transactions
-            .Where(t => t.Id == transactionId)
+            .Where(t => t.TransactionId == transactionId)
             .ExecuteDeleteAsync<Transaction>();
     }
 
@@ -93,8 +101,10 @@ public class TransactionRepository: ITransactionRepository
         return await _context.Transactions
             .Where(t => t.CategoryId == categoryId)
             .Select(t => new TransactionDto(
-                t.Id,
-                t.Name,
+                t.TransactionId,
+                t.TransactionName,
+                t.Amount,
+                t.Timestamp,
                 t.Category!.CategoryName,
                 t.Description
             ))

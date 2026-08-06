@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations;
 namespace Data.Dtos;
 
 public record CreateTransactionDto (
-    [Required] string Name,
-    [Range(1,10)] int CategoryId,
+    [Required] string TransactionName,
+    [Required] decimal Amount,
+    [Required] DateTime Timestamp,
+    [Range(1,100)] int CategoryId,
     string Description);
