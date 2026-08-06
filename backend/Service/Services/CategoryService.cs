@@ -17,4 +17,24 @@ public class CategoryService:  ICategoryService
     {
         return await _categoryRepository.GetCategories();
     }
+
+    public async Task<CategoryDto?> GetCategoryById(int categoryId)
+    {
+        return await _categoryRepository.GetCategoryById(categoryId);
+    }
+
+    public async Task<CategoryDto> AddCategory(CreateCategoryDto newCategory)
+    {
+        return await _categoryRepository.AddCategory(newCategory);
+    }
+
+    public async Task<bool> UpdateCategory(int categoryId, CreateCategoryDto updatedCategory)
+    {
+        return await _categoryRepository.UpdateCategory(categoryId, updatedCategory);
+    }
+
+    public async Task DeleteCategory(int categoryId)
+    {
+        await _categoryRepository.DeleteCategory(categoryId);
+    }
 }

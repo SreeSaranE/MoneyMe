@@ -48,7 +48,7 @@ public static class AppEndpoints
             var updateResult = await _service.UpdateTransaction(transactionId,  updateCash);
             
             if (updateResult == false) return Results.NotFound();
-            return Results.Ok("Updated Cash");
+            return Results.NoContent();
         });
 
         //---------------------------
@@ -57,7 +57,7 @@ public static class AppEndpoints
             ITransactionService _service) =>
         {
             await _service.DeleteTransaction(transactionId);
-            return Results.Ok("Deleted Transaction");
+            return Results.NoContent();
         });
     }
 }
