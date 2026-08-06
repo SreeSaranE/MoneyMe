@@ -38,4 +38,9 @@ public class TransactionService: ITransactionService
     {
         await _transactionRepository.DeleteTransaction(transactionId);
     }
+
+    public async Task<List<TransactionDto>> GetTransactionByCategory(int categoryId)
+    {
+        return await _transactionRepository.GetTransactionByCategory(categoryId);
+    }
 }

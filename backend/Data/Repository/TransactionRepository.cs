@@ -87,4 +87,17 @@ public class TransactionRepository: ITransactionRepository
             .Where(t => t.Id == transactionId)
             .ExecuteDeleteAsync<Transaction>();
     }
+
+    public async Task<List<TransactionDto>> GetTransactionByCategory(int categoryId)
+    {
+        return await _context.Transactions
+            .Where(t => t.CategoryId == categoryId)
+            .Select(t => new TransactionDto(
+                t.Id,
+                t.Name,
+                t.Category!.CategoryName,
+                t.Description
+            ))
+            .ToListAsync();
+    }
 }

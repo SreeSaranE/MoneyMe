@@ -13,15 +13,15 @@ public static class AppEndpoints
         
         group.MapGet("/", () => "Welcome to MoneyMe");
 
-        group.MapGet("/transactions", async (ITransactionService _service) =>
-            await _service.GetAllTransaction());
+        group.MapGet("/transactions", async (ITransactionService service) =>
+            await service.GetAllTransaction());
 
         //---------------------------
         group.MapGet("/transaction/{transactionId}", async (
             int transactionId,
-            ITransactionService _service) =>
+            ITransactionService service) =>
         {
-            var transaition = await _service.GetTransactionById(transactionId);
+            var transaition = await service.GetTransactionById(transactionId);
             
             return transaition is null ? Results.NotFound() : Results.Ok(transaition);
         }).WithName(GetCashEndpoint);
@@ -29,9 +29,9 @@ public static class AppEndpoints
         //---------------------------
         group.MapPost("/add", async (
             CreateTransactionDto newTransaction,
-            ITransactionService _service) =>
+            ITransactionService service) =>
         {
-            var addResult = await _service.AddTransaction(newTransaction);
+            var addResult = await service.AddTransaction(newTransaction);
             
             return Results.CreatedAtRoute(
                 GetCashEndpoint,
@@ -43,9 +43,9 @@ public static class AppEndpoints
         group.MapPut("/update/{transactionId}", async (
             int transactionId,
             UpdateTransationDto updateCash,
-            ITransactionService _service) =>
+            ITransactionService service) =>
         {
-            var updateResult = await _service.UpdateTransaction(transactionId,  updateCash);
+            var updateResult = await service.UpdateTransaction(transactionId,  updateCash);
             
             if (updateResult == false) return Results.NotFound();
             return Results.NoContent();
@@ -54,10 +54,20 @@ public static class AppEndpoints
         //---------------------------
         group.MapPut("/delete/{transactionId}", async (
             int transactionId,
-            ITransactionService _service) =>
+            ITransactionService service) =>
         {
-            await _service.DeleteTransaction(transactionId);
+            await service.DeleteTransaction(transactionId);
             return Results.NoContent();
+        });
+        
+        group.MapGet("/transaction/category/{categoryId}", async (
+            int categoryId,
+            ITransactionService service) =>
+        {
+            var transactions = await service.GetTransactionByCategory(categoryId);
+            
+            return Results.Ok(transactions);
+            // return transactions is null ? Results.NotFound() : Results.Ok(transactions);
         });
     }
 }

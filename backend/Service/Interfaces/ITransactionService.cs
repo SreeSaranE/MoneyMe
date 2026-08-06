@@ -13,4 +13,6 @@ public interface ITransactionService
     Task<bool> UpdateTransaction(int transactionId, UpdateTransationDto updatedTransaction);
     
     Task DeleteTransaction(int transactionId);
+
+    Task<List<TransactionDto>> GetTransactionByCategory(int categoryId);
 }

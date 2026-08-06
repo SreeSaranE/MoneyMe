@@ -56,5 +56,6 @@ public static class CategoryEndpoints
             await service.DeleteCategory(categoryId);
             return Results.NoContent();
         });
+        
     }
 }
