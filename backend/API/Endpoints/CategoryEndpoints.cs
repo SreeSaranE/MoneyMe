@@ -9,7 +9,7 @@ public static class CategoryEndpoints
     
     public static void MapCategoryEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("categories");
+        var group = app.MapGroup("category");
 
         group.MapGet("/", async (
             ICategoryService service) => 
@@ -17,7 +17,7 @@ public static class CategoryEndpoints
             return await service.GetCategories(); 
         });
 
-        group.MapGet("/category/{categoryId}", async (
+        group.MapGet("/{categoryId}", async (
             int categoryId,
             ICategoryService service) =>
         {

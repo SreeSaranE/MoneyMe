@@ -9,7 +9,7 @@ public static class AppEndpoints
 
     public static void MapCashEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("cash");
+        var group = app.MapGroup("transaction");
         
         group.MapGet("/", () => "Welcome to MoneyMe");
 
@@ -17,7 +17,7 @@ public static class AppEndpoints
             await service.GetAllTransaction());
 
         //---------------------------
-        group.MapGet("/transaction/{transactionId}", async (
+        group.MapGet("/{transactionId}", async (
             Guid transactionId,
             ITransactionService service) =>
         {
