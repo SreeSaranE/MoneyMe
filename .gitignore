@@ -40,14 +40,13 @@ secrets.json
 **/secrets.json
 
 # =========================
-# Angular / Node
+# React / Node
 # =========================
 
 node_modules/
 
 dist/
-.angular/
-.angular/cache/
+build/
 
 coverage/
 
@@ -61,8 +60,8 @@ package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
 
-# Environment files
-src/environments/environment.development.ts.local
+# Vite
+vite.svg
 
 # =========================
 # OS Files
@@ -85,7 +84,6 @@ Thumbs.db
 
 *.swp
 *.swo
-
 
 # db
 # SQLite databases
