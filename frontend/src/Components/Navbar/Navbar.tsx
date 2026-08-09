@@ -1,34 +1,54 @@
+import { Link, NavLink } from 'react-router-dom'
 import './Navbar.css'
+import ThemeService from '../../features/theme/services/theme.service';
+import { useEffect, useState } from 'react';
+
 
 export default function Navbar() {
 
-    const navbarItems = ["Home", "History", "Category", ]
+    const themeService = ThemeService();
+    const [currentTheme, setCurrentTheme] = useState('');
+    
+    const navItems= ["Dashboard", "Transaction"]
 
-    return<>
+    useEffect(() => {ToggleTheme()}, [])
+
+    function ToggleTheme() {
+        
+        themeService.toggleTheme();
+        setCurrentTheme(themeService.getTheme());
+    }
+
+    return <>
     <div className="navbarContent">
+        
+        <div className='leftContent'>
 
-        <div className="navbarLeftContent">
-            <p>MoneyMe</p>
-        </div>
-
-        <div className="navbarRightContent">
-            <ul className="navbarList">
-                {navbarItems.map((item, index) => (
-                    <li key={index} className="navbarItem">
-                        <a href={item}>{item}</a>
-                    </li>
-                ))}
-            </ul>
-
-            
+            {navItems.map((item) => (
+                <NavLink
+                    key={item}
+                    to={`/${item.toLowerCase()}`}
+                    className="navItems"
+                >
+                    {item}
+                </NavLink>
+            ))}
         </div>
         
-        <div className='navbarUtilities'>
-                <p className='toggleTheme'>⏾</p>
-                <p className='settings'>⛭</p>
+        <div className='userName'>
+            <p className='name'>Silicon</p>
+
+            <button
+            className="icon-btn"
+            onClick={ToggleTheme}>
+                <p className="theme">
+                    {(currentTheme === 'light') ? '☀︎': '⏾'}
+                </p>
+            </button>
+
+            <Link to="/settings" className="settings">⛭</Link>
         </div>
-        
-        
+
     </div>
     </>
 }
