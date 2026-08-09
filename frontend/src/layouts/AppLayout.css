@@ -1,0 +1,41 @@
+.appLayoutContent {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--background);
+  color: var(--text);
+}
+
+/* Navbar wrapper */
+.layoutNavbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+}
+
+/* Page content */
+.layoutOutlet {
+  width: 100%;
+  min-height: 100vh;
+
+  box-sizing: border-box;
+  padding: 100px 24px 24px;
+}
+
+/* Better spacing on smaller screens */
+@media (max-width: 768px) {
+  .layoutNavbar {
+    height: 72px;
+  }
+
+  .layoutOutlet {
+    padding: 88px 16px 20px;
+  }
+}
