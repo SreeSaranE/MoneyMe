@@ -1,8 +1,13 @@
+import './CategoryPage.css'
+
 import { useState, useEffect } from "react";
 import {
     getCategories,
     getCatgoryById,
-    addCategory} from "../../services/CategoryService";
+    addCategory
+} from "../../services/CategoryService";
+
+
 
 type categoryType = {
     categoryId: number,
@@ -41,7 +46,7 @@ export default function CategoryPage() {
     
     return<>
     <div className="categoryContent">
-        <p>This is category page...</p>
+        <p>Categories</p>
 
         <div className="refreshCategory">
             <button onClick={loadCategory}>Refresh</button>
