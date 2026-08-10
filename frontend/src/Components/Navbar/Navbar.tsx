@@ -1,54 +1,65 @@
-import { Link, NavLink } from 'react-router-dom'
-import './Navbar.css'
+import { Link, NavLink } from 'react-router-dom';
+import './Navbar.css';
 import ThemeService from '../../features/theme/services/theme.service';
 import { useEffect, useState } from 'react';
 
-
 export default function Navbar() {
-
     const themeService = ThemeService();
     const [currentTheme, setCurrentTheme] = useState('');
-    
-    const navItems= ["Dashboard", "Transaction"]
 
-    useEffect(() => {ToggleTheme()}, [])
+    const navItems = ['Dashboard', 'Transaction', 'Category'];
+
+    const navItemsIcon = ['𓃑', '↔', '⌂'];
+
+    useEffect(() => {
+        ToggleTheme();
+    }, []);
 
     function ToggleTheme() {
-        
         themeService.toggleTheme();
         setCurrentTheme(themeService.getTheme());
     }
 
-    return <>
-    <div className="navbarContent">
-        
-        <div className='leftContent'>
+    return (
+        <nav className="navbarContent">
 
-            {navItems.map((item) => (
-                <NavLink
-                    key={item}
-                    to={`/${item.toLowerCase()}`}
-                    className="navItems"
+            <div className="leftNavbarContent">
+                <p className="name">MoneyMe</p>
+            </div>
+
+            <div className="middleNavbarContent">
+                {navItems.map((item, index) => (
+                    <NavLink
+                        key={item}
+                        to={`/${item.toLowerCase()}`}
+                        className="navItems"
+                    >
+                        <span className="navText">{item}</span>
+                        <span className="navIcon">{navItemsIcon[index]}</span>
+                    </NavLink>
+                ))}
+            </div>
+
+            <div className="rightNavbarContent">
+
+                <button
+                    className="icon-btn theme-btn"
+                    onClick={ToggleTheme}
+                    aria-label="Toggle theme"
                 >
-                    {item}
-                </NavLink>
-            ))}
-        </div>
-        
-        <div className='userName'>
-            <p className='name'>Silicon</p>
+                    {currentTheme === 'light' ? '☀︎' : '⏾'}
+                </button>
 
-            <button
-            className="icon-btn"
-            onClick={ToggleTheme}>
-                <p className="theme">
-                    {(currentTheme === 'light') ? '☀︎': '⏾'}
-                </p>
-            </button>
+                <Link
+                    className="settings"
+                    to="/settings"
+                    aria-label="Settings"
+                >
+                    ⛭
+                </Link>
 
-            <Link to="/settings" className="settings">⛭</Link>
-        </div>
+            </div>
 
-    </div>
-    </>
+        </nav>
+    );
 }

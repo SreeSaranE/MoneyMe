@@ -1,0 +1,328 @@
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebarContent {
+    display: flex;
+    flex-direction: column;
+
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    bottom: 20px;
+
+    width: 220px;
+    padding: 10px;
+
+    background-color: var(--text);
+    border-radius: 25px;
+
+    z-index: 1000;
+}
+
+
+/* =========================
+   TOP
+========================= */
+
+.topSidebarContent {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+}
+
+.sidebarName {
+    width: 100%;
+    margin: 0;
+    padding: 10px 15px;
+
+    border-radius: 15px;
+
+    color: var(--text);
+    background-color: var(--background);
+
+    white-space: nowrap;
+    text-align: center;
+}
+
+
+/* =========================
+   MIDDLE
+========================= */
+
+.middleSidebarContent {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+
+    margin-top: 25px;
+}
+
+
+.sidebarNavItems {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    padding: 10px 12px;
+
+    box-sizing: border-box;
+
+    border-radius: 15px;
+
+    color: var(--background);
+    background-color: transparent;
+
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.2s ease;
+}
+
+
+.sidebarNavItems:hover {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+
+.sidebarNavItems.active {
+    color: var(--text);
+    background-color: var(--background);
+}
+
+
+/* =========================
+   ICONS
+========================= */
+
+.sidebarNavIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+
+.sidebarNavText {
+    margin-left: 8px;
+
+    font-size: 0.95rem;
+}
+
+
+/* =========================
+   BOTTOM / RIGHT
+========================= */
+
+.rightSidebarContent {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: auto;
+    padding-top: 15px;
+}
+
+
+.sidebarIconBtn,
+.sidebarSettings {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 40px;
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    color: var(--text);
+    background-color: var(--background);
+
+    font-size: 1.1rem;
+    line-height: 1;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+.sidebarIconBtn:hover,
+.sidebarSettings:hover {
+    transform: scale(1.05);
+    opacity: 0.85;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 768px) {
+
+    .sidebarContent {
+        top: 12px;
+        left: 12px;
+        bottom: 12px;
+
+        width: 190px;
+
+        border-radius: 22px;
+    }
+
+    .sidebarNavItems {
+        padding: 9px 10px;
+    }
+
+    .sidebarNavText {
+        font-size: 0.9rem;
+    }
+}
+
+
+/* =========================
+   SMALL SCREEN
+========================= */
+
+@media (max-width: 520px) {
+
+    /*
+       Convert sidebar into
+       bottom navigation
+    */
+
+    .sidebarContent {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        top: auto;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+
+        width: auto;
+        height: auto;
+
+        padding: 6px;
+
+        border-radius: 22px;
+    }
+
+
+    .topSidebarContent {
+        width: auto;
+    }
+
+
+    .sidebarName {
+        display: none;
+    }
+
+
+    .middleSidebarContent {
+        flex: 1;
+
+        flex-direction: row;
+        justify-content: flex-start;
+
+        gap: 4px;
+
+        margin: 0;
+    }
+
+
+    .sidebarNavItems {
+        width: 38px;
+        height: 38px;
+
+        padding: 0;
+
+        justify-content: center;
+
+        border-radius: 50%;
+    }
+
+
+    .sidebarNavText {
+        display: none;
+    }
+
+
+    .sidebarNavIcon {
+        width: auto;
+
+        font-size: 1.1rem;
+    }
+
+
+    .rightSidebarContent {
+        margin: 0;
+        padding: 0;
+
+        gap: 4px;
+    }
+
+
+    .sidebarIconBtn,
+    .sidebarSettings {
+        width: 38px;
+        height: 38px;
+
+        font-size: 1rem;
+    }
+
+
+    .sidebarThemeBtn {
+        display: none;
+    }
+}
+
+
+/* =========================
+   VERY SMALL MOBILE
+========================= */
+
+@media (max-width: 380px) {
+
+    .sidebarContent {
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+
+        border-radius: 20px;
+    }
+
+
+    .sidebarNavItems {
+        width: 34px;
+        height: 34px;
+    }
+
+
+    .sidebarNavIcon {
+        font-size: 1rem;
+    }
+
+
+    .sidebarSettings {
+        width: 34px;
+        height: 34px;
+    }
+}

@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import './AppLayout.css'
-import Navbar from "../Components/Navbar/Navbar";
+import Sidebar from "../Components/sidebar/Sidebar";
 
 export default function AppLayout() {
 
@@ -8,7 +8,7 @@ export default function AppLayout() {
     <div className="appLayoutContent">
       
       <div className="layoutNavbar">
-        <Navbar />
+        <Sidebar />
       </div>
 
       <div className="layoutOutlet">
