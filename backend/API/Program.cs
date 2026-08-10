@@ -16,13 +16,16 @@ builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
+builder.WebHost.UseUrls("http://0.0.0.0:5196");
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("React",
         policy =>
         {
             policy
-                .WithOrigins("http://localhost:5173")
+                // .WithOrigins("http://10.170.177.113:5173", "http://localhost:5173", "http://157.51.67.4:5173"),
+                .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
