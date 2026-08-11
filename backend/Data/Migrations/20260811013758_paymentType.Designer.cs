@@ -3,6 +3,7 @@ using System;
 using Data.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(CashStoreContext))]
-    partial class CashStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20260811013758_paymentType")]
+    partial class paymentType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.10");
@@ -54,7 +57,6 @@ namespace Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CategoryId")
@@ -64,14 +66,14 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("MerchantName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("PaymentMethodId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TransactionName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("TransactionTypeId")

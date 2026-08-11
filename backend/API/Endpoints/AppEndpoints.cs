@@ -42,7 +42,7 @@ public static class AppEndpoints
         //---------------------------
         group.MapPut("/update/{transactionId}", async (
             Guid transactionId,
-            UpdateTransationDto updateCash,
+            UpdateTransactionDto updateCash,
             ITransactionService service) =>
         {
             var updateResult = await service.UpdateTransaction(transactionId,  updateCash);

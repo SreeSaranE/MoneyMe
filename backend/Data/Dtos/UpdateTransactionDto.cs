@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Data.Dtos;
 
-public record CreateTransactionDto(
+public record UpdateTransactionDto(
     [Required] string MerchantName,
 
     [Range(typeof(decimal), "0.01", "999999999999.99")]

@@ -29,7 +29,7 @@ public class TransactionService: ITransactionService
         return createdTransaction;
     }
 
-    public async Task<bool> UpdateTransaction(Guid transactionId, UpdateTransationDto updatedTransaction)
+    public async Task<bool> UpdateTransaction(Guid transactionId, UpdateTransactionDto updatedTransaction)
     {
         return await _transactionRepository.UpdateTransaction(transactionId, updatedTransaction);
     }

@@ -10,7 +10,7 @@ public interface ITransactionService
 
     Task<TransactionDto> AddTransaction(CreateTransactionDto newTransaction);
 
-    Task<bool> UpdateTransaction(Guid transactionId, UpdateTransationDto updatedTransaction);
+    Task<bool> UpdateTransaction(Guid transactionId, UpdateTransactionDto updatedTransaction);
     
     Task DeleteTransaction(Guid transactionId);
 

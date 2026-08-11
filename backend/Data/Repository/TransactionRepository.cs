@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repository;
 
-public class TransactionRepository: ITransactionRepository
+public class TransactionRepository: UpdateTransactionDto
 {
     private readonly CashStoreContext _context;
 
@@ -21,7 +21,7 @@ public class TransactionRepository: ITransactionRepository
             .Include(t => t.Category)
             .Select(transaction => new TransactionDto(
                 transaction.TransactionId,
-                transaction.TransactionName,
+                transaction.MerchantName,
                 transaction.Amount,
                 transaction.Timestamp,
                 transaction.Category!.CategoryName,
@@ -40,7 +40,7 @@ public class TransactionRepository: ITransactionRepository
         
         return new TransactionDto(
             transaction.TransactionId,
-            transaction.TransactionName,
+            transaction.MerchantName,
             transaction.Amount,
             transaction.Timestamp,
             transaction.Category!.CategoryName,
@@ -51,7 +51,7 @@ public class TransactionRepository: ITransactionRepository
     {
         Transaction transaction = new()
         {
-            TransactionName = newTransaction.TransactionName,
+            MerchantName = newTransaction.TransactionName,
             Amount =  newTransaction.Amount,
             Timestamp = newTransaction.Timestamp,
             CategoryId = newTransaction.CategoryId,
@@ -66,7 +66,7 @@ public class TransactionRepository: ITransactionRepository
             .Where(t => t.TransactionId == transaction.TransactionId)
             .Select(t => new TransactionDto(
                 t.TransactionId,
-                t.TransactionName,
+                t.MerchantName,
                 t.Amount,
                 t.Timestamp,
                 t.Category!.CategoryName,
@@ -76,12 +76,12 @@ public class TransactionRepository: ITransactionRepository
         return createdTransaction;
     }
 
-    public async Task<bool> UpdateTransaction(Guid transactionId, UpdateTransationDto updatedTransaction)
+    public async Task<bool> UpdateTransaction(Guid transactionId, UpdateTransactionDto updatedTransaction)
     {
         var existingTransaction = await _context.Transactions.FindAsync(transactionId);
         if (existingTransaction == null) return false;
         
-        existingTransaction.TransactionName = updatedTransaction.TransactionName;
+        existingTransaction.MerchantName = updatedTransaction.MerchantName;
         existingTransaction.CategoryId = updatedTransaction.CategoryId;
         existingTransaction.Description = updatedTransaction.Description;
         
@@ -102,7 +102,7 @@ public class TransactionRepository: ITransactionRepository
             .Where(t => t.CategoryId == categoryId)
             .Select(t => new TransactionDto(
                 t.TransactionId,
-                t.TransactionName,
+                t.MerchantName,
                 t.Amount,
                 t.Timestamp,
                 t.Category!.CategoryName,
