@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repository;
 
-public class TransactionRepository: UpdateTransactionDto
+public class TransactionRepository: ITransactionRepository
 {
     private readonly CashStoreContext _context;
 
@@ -19,12 +19,16 @@ public class TransactionRepository: UpdateTransactionDto
     {
         return await  _context.Transactions
             .Include(t => t.Category)
+            .Include(t => t.TransactionType)
+            .Include(p => p.PaymentMethod)
             .Select(transaction => new TransactionDto(
                 transaction.TransactionId,
                 transaction.MerchantName,
                 transaction.Amount,
                 transaction.Timestamp,
                 transaction.Category!.CategoryName,
+                transaction.TransactionType!.TransactionTypeName,
+                transaction.PaymentMethod!.PaymentMethodName,
                 transaction.Description))
             .AsNoTracking()
             .ToListAsync();
@@ -34,6 +38,8 @@ public class TransactionRepository: UpdateTransactionDto
     {
         var transaction = await _context.Transactions
             .Include(t => t.Category)
+            .Include(t => t.TransactionType)
+            .Include(p => p.PaymentMethod)
             .FirstOrDefaultAsync(t => t.TransactionId == transactionId);
         
         if (transaction == null) return null;
@@ -44,6 +50,8 @@ public class TransactionRepository: UpdateTransactionDto
             transaction.Amount,
             transaction.Timestamp,
             transaction.Category!.CategoryName,
+            transaction.TransactionType!.TransactionTypeName,
+            transaction.PaymentMethod!.PaymentMethodName,
             transaction.Description);
     }
 
@@ -51,10 +59,12 @@ public class TransactionRepository: UpdateTransactionDto
     {
         Transaction transaction = new()
         {
-            MerchantName = newTransaction.TransactionName,
+            MerchantName = newTransaction.MerchantName,
             Amount =  newTransaction.Amount,
             Timestamp = newTransaction.Timestamp,
             CategoryId = newTransaction.CategoryId,
+            TransactionTypeId = newTransaction.TransactionTypeId,
+            PaymentMethodId = newTransaction.PaymentMethodId,
             Description = newTransaction.Description,
         };
         
@@ -63,14 +73,18 @@ public class TransactionRepository: UpdateTransactionDto
 
         var createdTransaction = await _context.Transactions
             .Include(t => t.Category)
+            .Include(t => t.TransactionType)
+            .Include(p => p.PaymentMethod)
             .Where(t => t.TransactionId == transaction.TransactionId)
-            .Select(t => new TransactionDto(
-                t.TransactionId,
-                t.MerchantName,
-                t.Amount,
-                t.Timestamp,
-                t.Category!.CategoryName,
-                t.Description))
+            .Select(transaction => new TransactionDto(
+                transaction.TransactionId,
+                transaction.MerchantName,
+                transaction.Amount,
+                transaction.Timestamp,
+                transaction.Category!.CategoryName,
+                transaction.TransactionType!.TransactionTypeName,
+                transaction.PaymentMethod!.PaymentMethodName,
+                transaction.Description))
             .FirstAsync();
 
         return createdTransaction;
@@ -100,14 +114,15 @@ public class TransactionRepository: UpdateTransactionDto
     {
         return await _context.Transactions
             .Where(t => t.CategoryId == categoryId)
-            .Select(t => new TransactionDto(
-                t.TransactionId,
-                t.MerchantName,
-                t.Amount,
-                t.Timestamp,
-                t.Category!.CategoryName,
-                t.Description
-            ))
+            .Select(transaction => new TransactionDto(
+                transaction.TransactionId,
+                transaction.MerchantName,
+                transaction.Amount,
+                transaction.Timestamp,
+                transaction.Category!.CategoryName,
+                transaction.TransactionType!.TransactionTypeName,
+                transaction.PaymentMethod!.PaymentMethodName,
+                transaction.Description))
             .ToListAsync();
     }
 }
