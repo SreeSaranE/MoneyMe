@@ -85,6 +85,7 @@ public static class DataExtensions
                 new TransactionType { TransactionTypeName = "Expense" },
                 new TransactionType { TransactionTypeName = "Transfer" },
                 new TransactionType { TransactionTypeName = "Refund" },
+                new TransactionType { TransactionTypeName = "Rewards" },
                 new TransactionType { TransactionTypeName = "Lent" },
                 new TransactionType { TransactionTypeName = "Borrowed" },
                 new TransactionType { TransactionTypeName = "Loan Repayment Received" },

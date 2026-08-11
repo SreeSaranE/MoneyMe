@@ -12,9 +12,11 @@ builder.AddCashStoreDb();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ITransactionTypeRepository, TransactionTypeRepository>();
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<ITransactionTypeService, TransactionTypeService>();
 
 builder.WebHost.UseUrls("http://0.0.0.0:5196");
 
@@ -41,5 +43,6 @@ app.MigrateDb();
 // Map endpoints
 app.MapCashEndpoints();
 app.MapCategoryEndpoints();
+app.MapTransactionTypeEndpoints();
 
 app.Run();

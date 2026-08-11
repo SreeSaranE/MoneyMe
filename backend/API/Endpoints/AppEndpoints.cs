@@ -1,6 +1,7 @@
 using Data.Dtos;
 using Service.Interfaces;
 
+
 namespace API.Endpoints;
 
 public static class AppEndpoints
@@ -13,7 +14,8 @@ public static class AppEndpoints
         
         group.MapGet("/", () => "Welcome to MoneyMe");
 
-        group.MapGet("/transactions", async (ITransactionService service) =>
+        group.MapGet("/transactions", async (
+                ITransactionService service) =>
             await service.GetAllTransaction());
 
         //---------------------------
