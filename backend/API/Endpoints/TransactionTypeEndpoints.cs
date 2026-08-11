@@ -6,7 +6,7 @@ public static class TransactionTypeEndpoints
 {
     public static void MapTransactionTypeEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("transactionTypes");
+        var group = app.MapGroup("transaction-types");
 
         group.MapGet("/", async (
             ITransactionTypeService service) =>
