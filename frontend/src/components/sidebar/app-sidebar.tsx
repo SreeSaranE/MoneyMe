@@ -35,6 +35,11 @@ const data = {
       url: "/category",
       icon: ListSortAscending,
     },
+    {
+      name: "Test",
+      url: "/test",
+      icon: ListSortAscending,
+    },
   ],
 
 }
@@ -42,7 +47,7 @@ const data = {
 
 export function AppSidebar() {
   return (
-    <Sidebar variant="inset">
+    <Sidebar variant="sidebar">
 
       <SidebarHeader>
         <SidebarMenu>

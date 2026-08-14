@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { getTransactions } from "../../services/TransactionService";
+import { Button } from "@/components/ui/button";
 
 type Transaction = {
     transactionId: string;
@@ -29,9 +30,10 @@ export default function TransactionPage() {
             <div className="transactionHeader">
                 <h2>Transactions</h2>
 
-                <button onClick={loadTransactions}>
+                <Button onClick={loadTransactions} variant = "default">
                     Refresh
-                </button>
+                </Button>
+
             </div>
 
             <table className="transactionTable">

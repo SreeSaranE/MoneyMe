@@ -3,6 +3,7 @@ import DashboardPage from "../Pages/dashboard/DashboardPage";
 import CategoryPage from "../Pages/category/CategoryPage";
 import TransactionPage from "../Pages/transaction/TransactionPage";
 import AppLayout from "./layout";
+import TestPage from "@/Pages/test/TestPage";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,11 @@ const router = createBrowserRouter([
       {
         path: "/transaction",
         element: <TransactionPage />,
+      },
+
+      {
+        path: "/test",
+        element: <TestPage />,
       },
     ],
   },
