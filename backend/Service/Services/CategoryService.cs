@@ -23,13 +23,15 @@ public class CategoryService:  ICategoryService
         return await _categoryRepository.GetCategoryById(categoryId);
     }
 
-    public async Task<CategoryDto> AddCategory(CreateCategoryDto newCategory)
+    public async Task<CategoryDto?> AddCategory(CreateCategoryDto newCategory)
     {
+        if (newCategory.CategoryName == "") return null;
         return await _categoryRepository.AddCategory(newCategory);
     }
 
     public async Task<bool> UpdateCategory(int categoryId, CreateCategoryDto updatedCategory)
     {
+        if (updatedCategory.CategoryName == "") return false;
         return await _categoryRepository.UpdateCategory(categoryId, updatedCategory);
     }
 

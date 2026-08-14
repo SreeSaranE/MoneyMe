@@ -8,7 +8,7 @@ public interface ICategoryService
 
     Task<CategoryDto?> GetCategoryById(int categoryId);
 
-    Task<CategoryDto> AddCategory(CreateCategoryDto newCategory);
+    Task<CategoryDto?> AddCategory(CreateCategoryDto newCategory);
 
     Task<bool> UpdateCategory(int categoryId, CreateCategoryDto updatedCategory);
 

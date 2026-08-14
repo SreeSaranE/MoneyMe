@@ -32,6 +32,9 @@ public static class CategoryEndpoints
             ICategoryService service) =>
         {
             var addResult = await service.AddCategory(newCategory);
+            
+            if (addResult == null) return Results.NotFound();
+            
             return Results.CreatedAtRoute(
                 GetCategoryEndpoint,
                 new { categoryId = addResult.CategoryId },
