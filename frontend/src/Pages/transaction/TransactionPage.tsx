@@ -2,10 +2,13 @@
 import { useEffect, useState } from "react";
 import { getTransactions } from "../../services/TransactionService";
 import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { MoreHorizontalIcon } from "lucide-react";
 
 type Transaction = {
     transactionId: string;
-    transactionName: string;
+    merchantName: string;
     amount: number;
     timestamp: string;
     category: string;
@@ -18,50 +21,86 @@ export default function TransactionPage() {
     async function loadTransactions() {
         const data = await getTransactions();
         setTransactions(data);
+        console.log(data);
+        
     }
 
     useEffect(() => {
         loadTransactions();
+        
     }, []);
 
     return (
-        <div className="transactionContent">
+    <div className="grid grid-cols-1 gap-4">
 
-            <div className="transactionHeader">
-                <h2>Transactions</h2>
+        {/* Header */}
+        <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-semibold">Transactions</h1>
 
-                <Button onClick={loadTransactions} variant = "default">
-                    Refresh
-                </Button>
-
-            </div>
-
-            <table className="transactionTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {transactions.map((item) => (
-                        <tr key={item.transactionId}>
-                            <td>{item.transactionName}</td>
-                            <td>{item.category}</td>
-                            <td>₹{item.amount}</td>
-                            <td>
-                                {new Date(item.timestamp).toLocaleString()}
-                            </td>
-                            <td>{item.description}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
+            <Button onClick={loadTransactions}>
+                Refresh
+            </Button>
         </div>
+
+        {/* Categories Table */}
+        <div className="w-full rounded-lg border">
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead className="w-25">Merchant</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>DateTime</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead className="w-25 text-right">Actions</TableHead>
+                </TableRow>
+            </TableHeader>
+
+            <TableBody>
+                {transactions.map((item) => (
+                    <TableRow key={item.transactionId}>
+                        <TableCell>{item.merchantName}</TableCell>
+                        <TableCell>{item.amount}</TableCell>
+                        <TableCell>{item.timestamp}</TableCell>
+                        <TableCell>{item.category}</TableCell>
+                        <TableCell>{item.description}</TableCell>
+                        <TableCell className="text-right">
+                            <DropdownMenu>
+                            <DropdownMenuTrigger
+                                render={
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="size-8"
+                                >
+                                    <MoreHorizontalIcon />
+                                    <span className="sr-only">
+                                    Open menu
+                                    </span>
+                                </Button>
+                                }
+                            />
+
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem>
+                                Edit
+                                </DropdownMenuItem>
+
+                                <DropdownMenuSeparator />
+
+                                <DropdownMenuItem
+                                variant="destructive">
+                                Delete
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                            </DropdownMenu>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+        </div>
+
+    </div>
     );
 }

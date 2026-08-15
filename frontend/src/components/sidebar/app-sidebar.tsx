@@ -26,8 +26,8 @@ const data = {
       icon: LayoutDashboard,
     },
     {
-      name: "Transactions",
-      url: "/transactions",
+      name: "transaction",
+      url: "/transaction",
       icon: ArrowRightLeft,
     }, 
     {
