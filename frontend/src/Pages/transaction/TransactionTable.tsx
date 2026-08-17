@@ -31,7 +31,13 @@ function TransactionTable({
 
     async function loadTransactions() {
         const data = await getTransactions();
-        setTransactions(data);
+        const sortedData = [...data].sort(
+            (a, b) =>
+                new Date(b.timestamp).getTime() -
+                new Date(a.timestamp).getTime()
+        );
+
+        setTransactions(sortedData);
     }
 
     useEffect(() => {
