@@ -119,7 +119,7 @@ function CategoryTable({ refreshKey }: CategoryTableProps) {
         : categories.slice(0, 5);
 
     return (
-        <div className="w-100 bg-accent rounded-3xl border p-5">
+        <div className="w-200 bg-accent rounded-3xl border p-5">
 
             <div className="flex justify-between pb-5">
                 <p>

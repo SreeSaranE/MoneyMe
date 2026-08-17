@@ -1,106 +1,51 @@
-
-import { useEffect, useState } from "react";
-import { getTransactions } from "../../services/TransactionService";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { MoreHorizontalIcon } from "lucide-react";
-
-type Transaction = {
-    transactionId: string;
-    merchantName: string;
-    amount: number;
-    timestamp: string;
-    category: string;
-    description: string;
-};
+import { useState } from "react";
+import TransactionTable from "./TransactionTable";
+import UpdateTransaction from "./UpdateTransaction";
+import type { Transaction } from "./TransactionType";
 
 export default function TransactionPage() {
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [refreshKey, setRefreshKey] = useState(true);
 
-    async function loadTransactions() {
-        const data = await getTransactions();
-        setTransactions(data);
-        console.log(data);
-        
+    const [selectedTransaction, setSelectedTransaction] =
+        useState<Transaction | null>(null);
+
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    function refreshTransactions() {
+        setRefreshKey((prev) => !prev);
     }
 
-    useEffect(() => {
-        loadTransactions();
-        
-    }, []);
+    function handleTransactionClick(transaction: Transaction) {
+        setSelectedTransaction(transaction);
+        setIsDrawerOpen(true);
+    }
 
     return (
-    <div className="grid grid-cols-1 gap-4">
+        <div className="w-200 max-w-6xl mx-auto flex flex-col gap-10 p-6">
 
-        {/* Header */}
-        <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold">Transactions</h1>
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-semibold">
+                    Transactions
+                </h1>
 
-            <Button onClick={loadTransactions}>
-                Refresh
-            </Button>
+                <Button onClick={refreshTransactions}>
+                    Refresh
+                </Button>
+            </div>
+
+            <TransactionTable
+                refreshKey={refreshKey}
+                onTransactionClick={handleTransactionClick}
+            />
+
+            <UpdateTransaction
+                transaction={selectedTransaction}
+                open={isDrawerOpen}
+                onOpenChange={setIsDrawerOpen}
+            />
+
         </div>
-
-        {/* Categories Table */}
-        <div className="w-full rounded-lg border">
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead className="w-25">Merchant</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>DateTime</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead className="w-25 text-right">Actions</TableHead>
-                </TableRow>
-            </TableHeader>
-
-            <TableBody>
-                {transactions.map((item) => (
-                    <TableRow key={item.transactionId}>
-                        <TableCell>{item.merchantName}</TableCell>
-                        <TableCell>{item.amount}</TableCell>
-                        <TableCell>{item.timestamp}</TableCell>
-                        <TableCell>{item.category}</TableCell>
-                        <TableCell>{item.description}</TableCell>
-                        <TableCell className="text-right">
-                            <DropdownMenu>
-                            <DropdownMenuTrigger
-                                render={
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="size-8"
-                                >
-                                    <MoreHorizontalIcon />
-                                    <span className="sr-only">
-                                    Open menu
-                                    </span>
-                                </Button>
-                                }
-                            />
-
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
-                                Edit
-                                </DropdownMenuItem>
-
-                                <DropdownMenuSeparator />
-
-                                <DropdownMenuItem
-                                variant="destructive">
-                                Delete
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-        </div>
-
-    </div>
     );
 }
