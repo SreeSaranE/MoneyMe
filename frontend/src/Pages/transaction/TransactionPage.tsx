@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import TransactionTable from "./TransactionTable";
 import UpdateTransaction from "./UpdateTransaction";
 import type { Transaction } from "./TransactionType";
+import TransactionTable from "./TransactionTable";
 
 export default function TransactionPage() {
     const [refreshKey, setRefreshKey] = useState(true);

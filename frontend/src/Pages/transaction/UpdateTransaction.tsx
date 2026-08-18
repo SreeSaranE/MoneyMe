@@ -51,6 +51,7 @@ function UpdateTransaction({
                             <p>Merchant: {transaction.merchantName}</p>
                             <p>Category: {transaction.category}</p>
                             <p>Amount: ₹{transaction.amount}</p>
+                            <p>Timestamp: {transaction.timestamp}</p>
                             <p>
                                 Type: {transaction.transactionType}
                             </p>

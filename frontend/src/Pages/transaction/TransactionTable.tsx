@@ -2,15 +2,31 @@
 
 import { useEffect, useState } from "react";
 import { getTransactions } from "../../services/TransactionService";
-import { Button } from "@/components/ui/button";
 import {
     Table,
     TableBody,
     TableCell,
     TableRow,
 } from "@/components/ui/table";
-import type { Transaction } from "./TransactionType"
+import type { Transaction } from "./TransactionType";
 import UpdateTransaction from "./UpdateTransaction";
+
+import { Field, FieldLabel } from "@/components/ui/field";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 type TransactionTableProps = {
     refreshKey: boolean;
@@ -22,7 +38,9 @@ function TransactionTable({
     onTransactionClick,
 }: TransactionTableProps) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [showAllTransactions, setShowAllTransactions] = useState(false);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const [selectedTransaction] =
         useState<Transaction | null>(null);
@@ -31,6 +49,7 @@ function TransactionTable({
 
     async function loadTransactions() {
         const data = await getTransactions();
+
         const sortedData = [...data].sort(
             (a, b) =>
                 new Date(b.timestamp).getTime() -
@@ -44,8 +63,34 @@ function TransactionTable({
         loadTransactions();
     }, [refreshKey]);
 
-    function handleViewAllButton() {
-        setShowAllTransactions((prev) => !prev);
+    // Pagination calculations
+    const totalPages = Math.ceil(
+        transactions.length / rowsPerPage
+    );
+
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+
+    const paginatedTransactions = transactions.slice(
+        startIndex,
+        endIndex
+    );
+
+    function handleRowsPerPageChange(value: string | null) {
+        if (!value) return;
+
+        setRowsPerPage(Number(value));
+        setCurrentPage(1);
+    }
+
+    function handlePreviousPage() {
+        setCurrentPage((prev) => Math.max(prev - 1, 1));
+    }
+
+    function handleNextPage() {
+        setCurrentPage((prev) =>
+            Math.min(prev + 1, totalPages)
+        );
     }
 
     function formatDateTime(timestamp: string) {
@@ -65,10 +110,14 @@ function TransactionTable({
             })}`;
         }
 
-        return date.toLocaleDateString("en-IN", {
+        return `${date.toLocaleDateString("en-IN", {
             month: "short",
             day: "numeric",
-        });
+        })}, ${date.toLocaleTimeString("en-IN", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+        })}`;
     }
 
     function formatAmount(amount: number) {
@@ -89,64 +138,145 @@ function TransactionTable({
                         <br />
                         {transactions.length}
                     </p>
-
-                    {transactions.length > 5 && (
-                        <Button
-                            variant="outline"
-                            onClick={handleViewAllButton}
-                        >
-                            {showAllTransactions ? "View Less" : "View All"}
-                        </Button>
-                    )}
                 </div>
 
                 <Table>
                     <TableBody>
-                        {transactions
-                            .slice(
-                                0,
-                                showAllTransactions
-                                    ? transactions.length
-                                    : 5
-                            )
-                            .map((item) => (
-                                <TableRow
-                                    key={item.transactionId}
-                                    onClick={() => onTransactionClick(item)}
-                                    className="cursor-pointer"
+                        {paginatedTransactions.map((item) => (
+                            <TableRow
+                                key={item.transactionId}
+                                onClick={() =>
+                                    onTransactionClick(item)
+                                }
+                                className="cursor-pointer"
+                            >
+                                <TableCell />
+
+                                <TableCell>
+                                    {item.merchantName}
+                                </TableCell>
+
+                                <TableCell>
+                                    <p>{item.category}</p>
+
+                                    <p className="text-gray-400">
+                                        {item.description}
+                                    </p>
+                                </TableCell>
+
+                                <TableCell>
+                                    {formatDateTime(item.timestamp)}
+                                </TableCell>
+
+                                <TableCell
+                                    className={
+                                        item.transactionType === "Income"
+                                            ? "text-green-600 text-right"
+                                            : "text-right"
+                                    }
                                 >
-                                    <TableCell />
-
-                                    <TableCell>
-                                        {item.merchantName}
-                                    </TableCell>
-
-                                    <TableCell>
-                                        <p>{item.category}</p>
-                                        
-                                        <p className="text-gray-400">{item.description}</p>
-                                        
-                                    </TableCell>
-
-                                    <TableCell>
-                                        {formatDateTime(item.timestamp)}
-                                    </TableCell>
-
-                                    <TableCell
-                                        className={
-                                            item.transactionType === "Income"
-                                                ? "text-green-600 text-right"
-                                                : "text-right"
-                                        }
-                                    >
-                                        {item.transactionType === "Income"
+                                    {item.transactionType === "Income"
                                         ? `+${formatAmount(item.amount)}`
                                         : `-${formatAmount(item.amount)}`}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                                </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
+
+                {transactions.length > 0 && (
+                    <div className="flex items-center justify-between pt-5">
+                        {/* Rows per page */}
+                        <Field
+                            orientation="horizontal"
+                            className="w-fit"
+                        >
+                            <FieldLabel htmlFor="select-rows-per-page">
+                                Rows per page
+                            </FieldLabel>
+
+                            <Select
+                                value={String(rowsPerPage)}
+                                onValueChange={handleRowsPerPageChange}
+                            >
+                                <SelectTrigger
+                                    className="w-20"
+                                    id="select-rows-per-page"
+                                >
+                                    <SelectValue />
+                                </SelectTrigger>
+
+                                <SelectContent align="start">
+                                    <SelectGroup>
+                                        <SelectItem value="5">
+                                            5
+                                        </SelectItem>
+
+                                        <SelectItem value="10">
+                                            10
+                                        </SelectItem>
+
+                                        <SelectItem value="25">
+                                            25
+                                        </SelectItem>
+
+                                        <SelectItem value="50">
+                                            50
+                                        </SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </Field>
+
+                        {/* Pagination */}
+                        <Pagination className="mx-0 w-auto">
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious
+                                        href="#"
+                                        onClick={(event) => {
+                                            event.preventDefault();
+                                            handlePreviousPage();
+                                        }}
+                                        aria-disabled={
+                                            currentPage === 1
+                                        }
+                                        className={
+                                            currentPage === 1
+                                                ? "pointer-events-none opacity-50"
+                                                : ""
+                                        }
+                                    />
+                                </PaginationItem>
+
+                                <PaginationItem>
+                                    <span className="px-3 text-sm">
+                                        {currentPage} of{" "}
+                                        {totalPages}
+                                    </span>
+                                </PaginationItem>
+
+                                <PaginationItem>
+                                    <PaginationNext
+                                        href="#"
+                                        onClick={(event) => {
+                                            event.preventDefault();
+                                            handleNextPage();
+                                        }}
+                                        aria-disabled={
+                                            currentPage === totalPages
+                                        }
+                                        className={
+                                            currentPage === totalPages
+                                                ? "pointer-events-none opacity-50"
+                                                : ""
+                                        }
+                                    />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
+                    </div>
+                )}
             </div>
 
             <UpdateTransaction
@@ -157,4 +287,5 @@ function TransactionTable({
         </>
     );
 }
+
 export default TransactionTable;
