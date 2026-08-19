@@ -9,19 +9,27 @@ import {
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
-import type { Transaction, UpdateTransaction } from "./TransactionType";
+import {
+    type Transaction,
+    type UpdateTransactionType,
+    type TransactionTypeNameType,
+    type PaymentMethodType,
+} from "./TransactionType";
 import { Input } from "@/components/ui/input";
 import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox"
+    Combobox,
+    ComboboxContent,
+    ComboboxEmpty,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxList,
+} from "@/components/ui/combobox";
 import { useEffect, useState } from "react";
-import { updateCategory } from "@/services/CategoryService";
-
+import { getPaymentMethodApi } from "@/services/PaymentMethodService";
+import { getTransactionTypeApi } from "@/services/TransactionTypeService";
+import { type categoryType } from "../category/categoryType";
+import { getCategories } from "@/services/CategoryService";
+import { updateTransactionApi } from "@/services/TransactionService";
 
 type UpdateTransactionProps = {
     transaction: Transaction | null;
@@ -38,42 +46,114 @@ function UpdateTransaction({
     const isMobile = useIsMobile();
     const swipeDirection = isMobile ? "down" : "right";
 
-    const frameworks = ["Income", "Expense"]
+    const [transactionTypeData, setTransactionTypeData] = useState<
+        TransactionTypeNameType[]
+    >([]);
+
+    const [paymentMethodData, setPaymentMethodData] = useState<
+        PaymentMethodType[]
+    >([]);
+
+    const [categoryData, setCategoryData] = useState<
+        categoryType[]
+    >([]);
 
     const [updatedMerchantName, setUpdatedMerchantName] = useState("");
     const [updatedCategory, setUpdatedCategory] = useState("");
-    const [updatedAmount, setUpdatedAmount] = useState(0);
+    const [updatedAmount, setUpdatedAmount] = useState("");
     const [updatedTimestamp, setUpdatedTimestamp] = useState("");
-    const [updatedUpdateTransactionType, setUpdatedUpdateTransactionType] = useState("");
+    const [updatedTransactionType, setUpdatedTransactionType] = useState("");
+    const [updatedPaymentMethod, setUpdatedPaymentMethod] = useState("");
     const [updatedDescription, setUpdatedDescription] = useState("");
 
+    // Load transaction data when drawer opens
     useEffect(() => {
-        if (open && (transaction != null)) {
+        if (open && transaction) {
             setUpdatedMerchantName(transaction.merchantName);
             setUpdatedCategory(transaction.category);
-            setUpdatedAmount(transaction.amount);
+            setUpdatedAmount(String(transaction.amount));
             setUpdatedTimestamp(transaction.timestamp);
-            setUpdatedUpdateTransactionType(transaction.transactionType);
+            setUpdatedTransactionType(transaction.transactionType);
+            setUpdatedPaymentMethod(transaction.paymentMethod);
             setUpdatedDescription(transaction.description);
         }
-    }, [open])
+    }, [open, transaction]);
 
+    // Load transaction types when drawer opens
+    useEffect(() => {
+        if (!open) return;
 
-    function handleSaveButton() {
-        const data: UpdateTransaction = {
+        async function loadTransactionTypes() {
+            try {
+                const TransactionTypeResponse = await getTransactionTypeApi();
+                setTransactionTypeData(TransactionTypeResponse);
+            } catch (error) {
+                console.error("Failed to load transaction types:", error);
+            }
+        }
+
+        async function loadPaymentMethod() {
+            try {
+                const PaymentMethodResponse = await getPaymentMethodApi();
+                setPaymentMethodData(PaymentMethodResponse);
+            } catch (error) {
+                console.error("Failed to load transaction types:", error);
+            }
+        }
+
+        async function loadCategory() {
+            try {
+                const CategoryResponse = await getCategories();
+                setCategoryData(CategoryResponse);
+            } catch (error) {
+                console.error("Failed to load transaction types:", error);
+            }
+        }
+
+        loadTransactionTypes();
+        loadPaymentMethod();
+        loadCategory();
+    }, [open]);
+
+    async function handleSaveButton() {
+        if (!transaction) return;
+
+        const selectedTransactionType = transactionTypeData.find(
+            (type) =>
+                type.transactionTypeName === updatedTransactionType
+        );
+
+        const selectedPaymentMethod = paymentMethodData.find(
+            (method) => 
+                method.paymentMethodName === updatedPaymentMethod
+        );
+
+        const selectedCategory = categoryData.find(
+            (category) => 
+                category.categoryName === updatedCategory
+        );
+
+        const data: UpdateTransactionType = {
             merchantName: updatedMerchantName,
-            amount: updatedAmount,
+            amount: Number(updatedAmount),
             timestamp: updatedTimestamp,
-            categoryID: 1,
-            transactionTypeID: 2,
-            paymentMethodID: 3,
+
+            categoryID: 
+                selectedCategory?.categoryId ?? 0,
+            transactionTypeID:
+                selectedTransactionType?.transactionTypeId ?? 0,
+            paymentMethodID:
+                selectedPaymentMethod?.paymentMethodId ?? 0,
+
             description: updatedDescription,
         };
 
-        console.log(data);
-        
+        console.log("Update data:", data);
+
+        await updateTransactionApi(transaction.transactionId, data);
     }
 
+    
 
     return (
         <Drawer
@@ -97,70 +177,208 @@ function UpdateTransaction({
 
                 <div className="flex-1 p-6">
                     {transaction && (
-                        <div>
-                            <p>Merchant:</p>
-                            <Input
-                                value={updatedMerchantName}
-                                onChange={(e) => setUpdatedMerchantName(e.target.value)}
-                            />
+                        <div className="space-y-4">
+                            {/* Merchant */}
+                            <div>
+                                <p className="mb-1">Merchant:</p>
 
-                            <p>Category:</p>
-                            <Input
-                                value={updatedCategory}
-                                onChange={(e) => setUpdatedCategory(e.target.value)}
-                            />
+                                <Input
+                                    value={updatedMerchantName}
+                                    onChange={(e) =>
+                                        setUpdatedMerchantName(e.target.value)
+                                    }
+                                />
+                            </div>
 
-                            <p>Amount: ₹</p>
-                            <Input
-                                value={String(updatedAmount)}
-                                onChange={(e) => setUpdatedAmount(Number(e.target.value))}
-                            />
+                            {/* Category */}
+                            <div>
+                                <p className="mb-1">Category:</p>
 
-                            <p>Timestamp:</p>
-                            <Input
-                                value={updatedTimestamp}
-                                onChange={(e) => setUpdatedTimestamp(e.target.value)}
-                            />
+                                <Combobox
+                                    items={categoryData.map(
+                                        (category) =>
+                                            category.categoryName
+                                    )}
+                                    value={updatedCategory}
+                                    onValueChange={(value) => {
+                                        setUpdatedCategory(value ?? "");
+                                    }}
+                                >
+                                    <ComboboxInput
+                                        placeholder="Select category"
+                                    />
 
-                            <p>Type:</p>
-                            <Input
-                                value={updatedUpdateTransactionType}
-                                onChange={(e) => setUpdatedUpdateTransactionType(e.target.value)}
-                            />
+                                    <ComboboxContent>
+                                        <ComboboxEmpty>
+                                            No category found.
+                                        </ComboboxEmpty>
 
-                            <p>Description:</p>
-                            <Input
-                                value={updatedDescription}
-                                onChange={(e) => setUpdatedDescription(e.target.value)}
-                            />
+                                        <ComboboxList>
+                                            {categoryData.map(
+                                                (category) => (
+                                                    <ComboboxItem
+                                                        key={
+                                                            category.categoryId
+                                                        }
+                                                        value={
+                                                            category.categoryName
+                                                        }
+                                                    >
+                                                        {
+                                                            category.categoryName
+                                                        }
+                                                    </ComboboxItem>
+                                                )
+                                            )}
+                                        </ComboboxList>
+                                    </ComboboxContent>
+                                </Combobox>
+                            </div>
 
-{/* <Combobox items={frameworks}>
-      <ComboboxInput placeholder={transaction.transactionType} />
-      <ComboboxContent>
-        <ComboboxEmpty>No items found.</ComboboxEmpty>
-        <ComboboxList>
-          {(item) => (
-            <ComboboxItem key={item} value={item}>
-              {item}
-            </ComboboxItem>
-          )}
-        </ComboboxList>
-      </ComboboxContent>
-    </Combobox> */}
+                            {/* Amount */}
+                            <div>
+                                <p className="mb-1">Amount: ₹</p>
 
+                                <Input
+                                    type="number"
+                                    value={updatedAmount}
+                                    onChange={(e) =>
+                                        setUpdatedAmount(e.target.value)
+                                    }
+                                />
+                            </div>
 
+                            {/* Timestamp */}
+                            <div>
+                                <p className="mb-1">Timestamp:</p>
+
+                                <Input
+                                    type="datetime-local"
+                                    value={updatedTimestamp}
+                                    onChange={(e) =>
+                                        setUpdatedTimestamp(e.target.value)
+                                    }
+                                />
+                            </div>
+
+                            {/* Transaction Type */}
+                            <div>
+                                <p className="mb-1">Type:</p>
+
+                                <Combobox
+                                    items={transactionTypeData.map(
+                                        (type) =>
+                                            type.transactionTypeName
+                                    )}
+                                    value={updatedTransactionType}
+                                    onValueChange={(value) => {
+                                        setUpdatedTransactionType(value ?? "");
+                                    }}
+                                >
+                                    <ComboboxInput
+                                        placeholder="Select transaction type"
+                                    />
+
+                                    <ComboboxContent>
+                                        <ComboboxEmpty>
+                                            No transaction types found.
+                                        </ComboboxEmpty>
+
+                                        <ComboboxList>
+                                            {transactionTypeData.map(
+                                                (transactionType) => (
+                                                    <ComboboxItem
+                                                        key={
+                                                            transactionType.transactionTypeId
+                                                        }
+                                                        value={
+                                                            transactionType.transactionTypeName
+                                                        }
+                                                    >
+                                                        {
+                                                            transactionType.transactionTypeName
+                                                        }
+                                                    </ComboboxItem>
+                                                )
+                                            )}
+                                        </ComboboxList>
+                                    </ComboboxContent>
+                                </Combobox>
+                            </div>
+
+                            {/* Payment Method */}
+                            <div>
+                                <p className="mb-1">Method:</p>
+
+                                <Combobox
+                                    items={paymentMethodData.map(
+                                        (method) =>
+                                            method.paymentMethodName
+                                    )}
+                                    value={updatedPaymentMethod}
+                                    onValueChange={(value) => {
+                                        setUpdatedPaymentMethod(value ?? "");
+                                    }}
+                                >
+                                    <ComboboxInput
+                                        placeholder="Select payment method"
+                                    />
+
+                                    <ComboboxContent>
+                                        <ComboboxEmpty>
+                                            No methods found.
+                                        </ComboboxEmpty>
+
+                                        <ComboboxList>
+                                            {paymentMethodData.map(
+                                                (paymentMethod) => (
+                                                    <ComboboxItem
+                                                        key={
+                                                            paymentMethod.paymentMethodId
+                                                        }
+                                                        value={
+                                                            paymentMethod.paymentMethodName
+                                                        }
+                                                    >
+                                                        {
+                                                            paymentMethod.paymentMethodName
+                                                        }
+                                                    </ComboboxItem>
+                                                )
+                                            )}
+                                        </ComboboxList>
+                                    </ComboboxContent>
+                                </Combobox>
+                            </div>
+
+                            {/* Description */}
+                            <div>
+                                <p className="mb-1">Description:</p>
+
+                                <Input
+                                    value={updatedDescription}
+                                    onChange={(e) =>
+                                        setUpdatedDescription(e.target.value)
+                                    }
+                                />
+                            </div>
                         </div>
                     )}
                 </div>
 
-                <DrawerFooter>
+                <DrawerFooter className="flex flex-row">
                     <DrawerClose>
                         <Button variant="outline">
                             Close
                         </Button>
                     </DrawerClose>
 
-                    <Button onClick={handleSaveButton}>Save</Button>
+                    <DrawerClose>
+                        <Button onClick={handleSaveButton}>
+                            Save
+                        </Button>
+                    </DrawerClose>
+                    
                 </DrawerFooter>
             </DrawerContent>
         </Drawer>

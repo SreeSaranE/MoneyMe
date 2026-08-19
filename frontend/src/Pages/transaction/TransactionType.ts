@@ -9,7 +9,7 @@ export type Transaction = {
     description: string;
 };
 
-export type UpdateTransaction = {
+export type UpdateTransactionType = {
     merchantName: string;
     amount: number;
     timestamp: string;
@@ -18,3 +18,13 @@ export type UpdateTransaction = {
     paymentMethodID: number;
     description: string;
 };
+
+export type TransactionTypeNameType = {
+    transactionTypeId: number;
+    transactionTypeName: string;
+}
+
+export type PaymentMethodType = {
+    paymentMethodId: number;
+    paymentMethodName: string;
+}

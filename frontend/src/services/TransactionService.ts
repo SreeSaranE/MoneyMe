@@ -1,5 +1,5 @@
 import api from "./api";
-import type { UpdateTransaction } from "@/Pages/transaction/TransactionType";
+import type { UpdateTransactionType } from "@/Pages/transaction/TransactionType";
 
 export const getTransactions = async () => {
     const response = await api.get("/transaction/transactions");
@@ -8,9 +8,11 @@ export const getTransactions = async () => {
 
 export const updateTransactionApi = async (
     transactionId: string,
-    updatedTransaction: UpdateTransaction
+    updatedTransaction: UpdateTransactionType
 ) => {
     const response = await api.put(
         `/transaction/update/${transactionId}`,
         updatedTransaction)
+
+    return response.status;
 }
