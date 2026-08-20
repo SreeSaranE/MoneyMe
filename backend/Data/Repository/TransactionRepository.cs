@@ -97,6 +97,10 @@ public class TransactionRepository: ITransactionRepository
         
         existingTransaction.MerchantName = updatedTransaction.MerchantName;
         existingTransaction.CategoryId = updatedTransaction.CategoryId;
+        existingTransaction.Timestamp = updatedTransaction.Timestamp;
+        existingTransaction.Amount = updatedTransaction.Amount;
+        existingTransaction.TransactionTypeId = updatedTransaction.TransactionTypeId;
+        existingTransaction.PaymentMethodId = updatedTransaction.PaymentMethodId;
         existingTransaction.Description = updatedTransaction.Description;
         
         await _context.SaveChangesAsync();

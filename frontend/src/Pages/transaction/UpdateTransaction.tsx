@@ -37,6 +37,17 @@ type UpdateTransactionProps = {
     onOpenChange: (open: boolean) => void;
 };
 
+const formatTimestampForInput = (timestamp: string) => {
+    return timestamp.slice(0, 16);
+};
+
+const formatTimestampForApi = (timestamp: string) => {
+    return timestamp.length === 16
+        ? `${timestamp}:00`
+        : timestamp;
+};
+
+
 function UpdateTransaction({
     transaction,
     open,
@@ -72,7 +83,7 @@ function UpdateTransaction({
             setUpdatedMerchantName(transaction.merchantName);
             setUpdatedCategory(transaction.category);
             setUpdatedAmount(String(transaction.amount));
-            setUpdatedTimestamp(transaction.timestamp);
+            setUpdatedTimestamp(formatTimestampForInput(transaction.timestamp));
             setUpdatedTransactionType(transaction.transactionType);
             setUpdatedPaymentMethod(transaction.paymentMethod);
             setUpdatedDescription(transaction.description);
@@ -136,7 +147,7 @@ function UpdateTransaction({
         const data: UpdateTransactionType = {
             merchantName: updatedMerchantName,
             amount: Number(updatedAmount),
-            timestamp: updatedTimestamp,
+            timestamp: formatTimestampForApi(updatedTimestamp),
 
             categoryID: 
                 selectedCategory?.categoryId ?? 0,
