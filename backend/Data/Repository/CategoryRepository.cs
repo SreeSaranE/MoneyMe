@@ -20,7 +20,8 @@ public class CategoryRepository: ICategoryRepository
         return await _context.Categories
             .Select(category => new CategoryDto(
                 category.CategoryId,
-                category.CategoryName))
+                category.CategoryName,
+                category.CategoryIconId))
             .AsNoTracking()
             .ToListAsync();
     }
@@ -33,7 +34,8 @@ public class CategoryRepository: ICategoryRepository
 
         return new CategoryDto(
             category.CategoryId,
-            category.CategoryName
+            category.CategoryName,
+            category.CategoryIconId
         );
     }
 
@@ -41,7 +43,8 @@ public class CategoryRepository: ICategoryRepository
     {
         Category category = new()
         {
-            CategoryName = newCategory.CategoryName
+            CategoryName = newCategory.CategoryName,
+            CategoryIconId = newCategory.CategoryIconId
         };
 
         _context.Categories.Add(category);
@@ -49,9 +52,10 @@ public class CategoryRepository: ICategoryRepository
 
         var createdCategory = await _context.Categories
             .Where(c => c.CategoryId == category.CategoryId)
-            .Select(c => new CategoryDto(
-                c.CategoryId,
-                c.CategoryName))
+            .Select(category => new CategoryDto(
+                category.CategoryId,
+                category.CategoryName,
+                category.CategoryIconId))
             .FirstAsync();
         
         return createdCategory;
@@ -64,6 +68,7 @@ public class CategoryRepository: ICategoryRepository
         if (existingCategory == null) return false;
 
         existingCategory.CategoryName = updatedCategory.CategoryName;
+        existingCategory.CategoryIconId = updatedCategory.CategoryIconId;
         
         await  _context.SaveChangesAsync();
         return true;

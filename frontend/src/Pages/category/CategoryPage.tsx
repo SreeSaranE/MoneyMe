@@ -2,12 +2,19 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import AddCategory from "./AddCategory";
 import CategoryTable from "./CategoryTable";
-import GetCategoryById from "./GetCategoryById";
+import type { categoryType } from "./categoryType";
+// import GetCategoryById from "./GetCategoryById";
+import UpdateCategory  from './updateCategory'
 
 export default function CategoryPage() {
 
     // CategoryTable
     const [refreshKey, setRefreshKey] = useState(true);
+
+    const [ selectedCategory, setSelectedCategory ] =
+        useState<categoryType | null>(null);
+    
+        const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     function refreshCategories() {
         setRefreshKey(!refreshKey);
@@ -17,6 +24,11 @@ export default function CategoryPage() {
     function handleCategoryAdded() {
         setRefreshKey(!refreshKey);
     }
+
+    function handleCategoryClick(category: categoryType) {
+            setSelectedCategory(category);
+            setIsDrawerOpen(true);
+        }
 
     return (
     <div className="w-full max-w-6xl mx-auto flex flex-col gap-10 p-6">
@@ -35,10 +47,18 @@ export default function CategoryPage() {
         </div>
 
         {/* Categories Table */}
-        <CategoryTable refreshKey={refreshKey} />
+        <CategoryTable
+            refreshKey={refreshKey}
+            onCategoryClick={handleCategoryClick}/>
+
+        <UpdateCategory
+            category={selectedCategory}
+            open={isDrawerOpen}
+            onOpenChange={setIsDrawerOpen}
+        />
 
         {/* Get Category */}
-        <GetCategoryById />
+        {/* <GetCategoryById /> */}
         
     </div>
     )

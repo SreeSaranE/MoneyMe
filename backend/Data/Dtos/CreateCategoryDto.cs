@@ -2,5 +2,6 @@ namespace Data.Dtos;
 
 public record CreateCategoryDto
 (
-    string CategoryName
+    string CategoryName,
+    int CategoryIconId
 );

@@ -9,12 +9,6 @@ import {
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
-import {
-    type Transaction,
-    type UpdateTransactionType,
-    type TransactionTypeNameType,
-    type PaymentMethodType,
-} from "./TransactionType";
 import { Input } from "@/components/ui/input";
 import {
     Combobox,
@@ -25,6 +19,12 @@ import {
     ComboboxList,
 } from "@/components/ui/combobox";
 import { useEffect, useState } from "react";
+import {
+    type Transaction,
+    type UpdateTransactionType,
+    type TransactionTypeNameType,
+    type PaymentMethodType,
+} from "./TransactionType";
 import { getPaymentMethodApi } from "@/services/PaymentMethodService";
 import { getTransactionTypeApi } from "@/services/TransactionTypeService";
 import { type categoryType } from "../category/categoryType";
@@ -165,7 +165,6 @@ function UpdateTransaction({
     }
 
     
-
     return (
         <Drawer
             open={open}
@@ -206,18 +205,19 @@ function UpdateTransaction({
                                 <p className="mb-1">Category:</p>
 
                                 <Combobox
-                                    items={categoryData.map(
-                                        (category) =>
-                                            category.categoryName
-                                    )}
-                                    value={updatedCategory}
+                                    items={categoryData}
+                                    itemToStringLabel={(category) => category.categoryName}
+                                    itemToStringValue={(category) => category.categoryName}
+                                    value={
+                                        categoryData.find(
+                                            (category) => category.categoryName === updatedCategory
+                                        ) ?? null
+                                    }
                                     onValueChange={(value) => {
-                                        setUpdatedCategory(value ?? "");
+                                        setUpdatedCategory(value?.categoryName ?? "");
                                     }}
                                 >
-                                    <ComboboxInput
-                                        placeholder="Select category"
-                                    />
+                                    <ComboboxInput placeholder="Select category" />
 
                                     <ComboboxContent>
                                         <ComboboxEmpty>
@@ -225,21 +225,13 @@ function UpdateTransaction({
                                         </ComboboxEmpty>
 
                                         <ComboboxList>
-                                            {categoryData.map(
-                                                (category) => (
-                                                    <ComboboxItem
-                                                        key={
-                                                            category.categoryId
-                                                        }
-                                                        value={
-                                                            category.categoryName
-                                                        }
-                                                    >
-                                                        {
-                                                            category.categoryName
-                                                        }
-                                                    </ComboboxItem>
-                                                )
+                                            {(category) => (
+                                                <ComboboxItem
+                                                    key={category.categoryId}
+                                                    value={category}
+                                                >
+                                                    {category.categoryName}
+                                                </ComboboxItem>
                                             )}
                                         </ComboboxList>
                                     </ComboboxContent>
@@ -277,18 +269,22 @@ function UpdateTransaction({
                                 <p className="mb-1">Type:</p>
 
                                 <Combobox
-                                    items={transactionTypeData.map(
-                                        (type) =>
-                                            type.transactionTypeName
-                                    )}
-                                    value={updatedTransactionType}
+                                    items={transactionTypeData}
+                                    itemToStringLabel={(type) => type.transactionTypeName}
+                                    itemToStringValue={(type) => type.transactionTypeName}
+                                    value={
+                                        transactionTypeData.find(
+                                            (type) =>
+                                                type.transactionTypeName === updatedTransactionType
+                                        ) ?? null
+                                    }
                                     onValueChange={(value) => {
-                                        setUpdatedTransactionType(value ?? "");
+                                        setUpdatedTransactionType(
+                                            value?.transactionTypeName ?? ""
+                                        );
                                     }}
                                 >
-                                    <ComboboxInput
-                                        placeholder="Select transaction type"
-                                    />
+                                    <ComboboxInput placeholder="Select transaction type" />
 
                                     <ComboboxContent>
                                         <ComboboxEmpty>
@@ -296,21 +292,13 @@ function UpdateTransaction({
                                         </ComboboxEmpty>
 
                                         <ComboboxList>
-                                            {transactionTypeData.map(
-                                                (transactionType) => (
-                                                    <ComboboxItem
-                                                        key={
-                                                            transactionType.transactionTypeId
-                                                        }
-                                                        value={
-                                                            transactionType.transactionTypeName
-                                                        }
-                                                    >
-                                                        {
-                                                            transactionType.transactionTypeName
-                                                        }
-                                                    </ComboboxItem>
-                                                )
+                                            {(type) => (
+                                                <ComboboxItem
+                                                    key={type.transactionTypeId}
+                                                    value={type}
+                                                >
+                                                    {type.transactionTypeName}
+                                                </ComboboxItem>
                                             )}
                                         </ComboboxList>
                                     </ComboboxContent>
@@ -322,18 +310,22 @@ function UpdateTransaction({
                                 <p className="mb-1">Method:</p>
 
                                 <Combobox
-                                    items={paymentMethodData.map(
-                                        (method) =>
-                                            method.paymentMethodName
-                                    )}
-                                    value={updatedPaymentMethod}
+                                    items={paymentMethodData}
+                                    itemToStringLabel={(method) => method.paymentMethodName}
+                                    itemToStringValue={(method) => method.paymentMethodName}
+                                    value={
+                                        paymentMethodData.find(
+                                            (method) =>
+                                                method.paymentMethodName === updatedPaymentMethod
+                                        ) ?? null
+                                    }
                                     onValueChange={(value) => {
-                                        setUpdatedPaymentMethod(value ?? "");
+                                        setUpdatedPaymentMethod(
+                                            value?.paymentMethodName ?? ""
+                                        );
                                     }}
                                 >
-                                    <ComboboxInput
-                                        placeholder="Select payment method"
-                                    />
+                                    <ComboboxInput placeholder="Select payment method" />
 
                                     <ComboboxContent>
                                         <ComboboxEmpty>
@@ -341,26 +333,19 @@ function UpdateTransaction({
                                         </ComboboxEmpty>
 
                                         <ComboboxList>
-                                            {paymentMethodData.map(
-                                                (paymentMethod) => (
-                                                    <ComboboxItem
-                                                        key={
-                                                            paymentMethod.paymentMethodId
-                                                        }
-                                                        value={
-                                                            paymentMethod.paymentMethodName
-                                                        }
-                                                    >
-                                                        {
-                                                            paymentMethod.paymentMethodName
-                                                        }
-                                                    </ComboboxItem>
-                                                )
+                                            {(method) => (
+                                                <ComboboxItem
+                                                    key={method.paymentMethodId}
+                                                    value={method}
+                                                >
+                                                    {method.paymentMethodName}
+                                                </ComboboxItem>
                                             )}
                                         </ComboboxList>
                                     </ComboboxContent>
                                 </Combobox>
                             </div>
+
 
                             {/* Description */}
                             <div>

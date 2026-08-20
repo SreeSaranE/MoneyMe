@@ -42,25 +42,25 @@ public static class DataExtensions
         if (!db.Categories.Any())
         {
             db.Categories.AddRange(
-                new Category { CategoryName = "Pocket Money" },
-                new Category { CategoryName = "Food" },
-                new Category { CategoryName = "Snacks" },
-                new Category { CategoryName = "Grooming" },
-                new Category { CategoryName = "Transport" },
-                new Category { CategoryName = "Salary" },
-                new Category { CategoryName = "Shopping" },
-                new Category { CategoryName = "Entertainment" },
-                new Category { CategoryName = "Subscriptions" },
-                new Category { CategoryName = "Education" },
-                new Category { CategoryName = "Health" },
-                new Category { CategoryName = "Mobile & Internet" },
-                new Category { CategoryName = "Bills" },
-                new Category { CategoryName = "Travel" },
-                new Category { CategoryName = "Gifts" },
-                new Category { CategoryName = "Sports & Fitness" },
-                new Category { CategoryName = "Personal Care" },
-                new Category { CategoryName = "Home" },
-                new Category { CategoryName = "Other" }
+                new Category { CategoryName = "Pocket Money", CategoryIconId = 0 },
+                new Category { CategoryName = "Food", CategoryIconId = 0 },
+                new Category { CategoryName = "Snacks", CategoryIconId = 0 },
+                new Category { CategoryName = "Grooming", CategoryIconId = 0 },
+                new Category { CategoryName = "Transport", CategoryIconId = 0 },
+                new Category { CategoryName = "Salary", CategoryIconId = 0 },
+                new Category { CategoryName = "Shopping", CategoryIconId = 0 },
+                new Category { CategoryName = "Entertainment", CategoryIconId = 0 },
+                new Category { CategoryName = "Subscriptions", CategoryIconId = 0 },
+                new Category { CategoryName = "Education", CategoryIconId = 0 },
+                new Category { CategoryName = "Health", CategoryIconId = 0 },
+                new Category { CategoryName = "Mobile & Internet", CategoryIconId = 0 },
+                new Category { CategoryName = "Bills", CategoryIconId = 0 },
+                new Category { CategoryName = "Travel", CategoryIconId = 0 },
+                new Category { CategoryName = "Gifts", CategoryIconId = 0 },
+                new Category { CategoryName = "Sports & Fitness", CategoryIconId = 0 },
+                new Category { CategoryName = "Personal Care", CategoryIconId = 0 },
+                new Category { CategoryName = "Home", CategoryIconId = 0 },
+                new Category { CategoryName = "Other", CategoryIconId = 0 }
             );
 
             db.SaveChanges();

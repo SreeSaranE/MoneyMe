@@ -7,7 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { ArrowRightLeft, BanknoteCheck, LayoutDashboard, ListSortAscending } from "lucide-react"
+import { ArrowRightLeft, BanknoteCheck, LayoutDashboard, ListSortAscending, Bug } from "lucide-react"
 import { NavPages } from "./nav-pages"
 import { NavUser } from "./nav-user"
 
@@ -38,7 +38,7 @@ const data = {
     {
       name: "Test",
       url: "/test",
-      icon: ListSortAscending,
+      icon: Bug,
     },
   ],
 

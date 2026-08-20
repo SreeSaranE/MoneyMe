@@ -1,3 +1,4 @@
+import type { UpdateCategoryType } from "@/Pages/category/categoryType";
 import api from "./api";
 
 export const getCategories = async () => {
@@ -23,10 +24,8 @@ export const deleteCategoryById = async (categoryId: number) => {
     return response;
 }
 
-export const updateCategory = async(categoryId: number, categoryName: string) => {
-    var updateCategory = {
-        CategoryName: categoryName
-    }
-    const response = await api.put(`/category/update/${categoryId}`, updateCategory);
+export const updateCategoryApi = async(categoryId: number, categoryData: UpdateCategoryType) => {
+   
+    const response = await api.put(`/category/update/${categoryId}`, categoryData);
     return response;
 }
