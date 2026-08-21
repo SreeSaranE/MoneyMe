@@ -26,9 +26,9 @@ export default function CategoryPage() {
     }
 
     function handleCategoryClick(category: categoryType) {
-            setSelectedCategory(category);
-            setIsDrawerOpen(true);
-        }
+        setSelectedCategory(category);
+        setIsDrawerOpen(true);
+    }
 
     return (
     <div className="w-full max-w-6xl mx-auto flex flex-col gap-10 p-6">
