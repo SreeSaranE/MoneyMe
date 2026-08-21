@@ -9,8 +9,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import type { Transaction } from "./TransactionType";
-import UpdateTransaction from "./UpdateTransaction";
-
 import { Field, FieldLabel } from "@/components/ui/field";
 import {
     Pagination,
@@ -40,12 +38,7 @@ function TransactionTable({
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-
-    const [selectedTransaction] =
-        useState<Transaction | null>(null);
-
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     async function loadTransactions() {
         const data = await getTransactions();
@@ -55,7 +48,6 @@ function TransactionTable({
                 new Date(b.timestamp).getTime() -
                 new Date(a.timestamp).getTime()
         );
-
         setTransactions(sortedData);
     }
 
@@ -144,11 +136,12 @@ function TransactionTable({
                     <TableBody>
                         {paginatedTransactions.map((item) => (
                             <TableRow
+                                
                                 key={item.transactionId}
                                 onClick={() =>
                                     onTransactionClick(item)
                                 }
-                                className="cursor-pointer"
+                                className="cursor-pointer "
                             >
                                 <TableCell />
 
@@ -278,12 +271,6 @@ function TransactionTable({
                     </div>
                 )}
             </div>
-
-            <UpdateTransaction
-                transaction={selectedTransaction}
-                open={isDrawerOpen}
-                onOpenChange={setIsDrawerOpen}
-            />
         </>
     );
 }

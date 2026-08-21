@@ -14,7 +14,7 @@ export const addTransactionApi = async (
         newTransaction
     );
 
-    return response;1
+    return response;
 }
 
 export const updateTransactionApi = async (
@@ -26,5 +26,5 @@ export const updateTransactionApi = async (
         updatedTransaction
     );
 
-    return response.status;
+    return response;
 }

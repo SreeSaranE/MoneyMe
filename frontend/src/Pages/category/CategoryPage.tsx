@@ -38,7 +38,9 @@ export default function CategoryPage() {
             <h1 className="text-2xl font-semibold">Categories</h1>
 
             <div className="flex gap-2">
-                <AddCategory onCategoryAdded={handleCategoryAdded} />
+                <AddCategory
+                    onCategoryAdded={handleCategoryAdded}
+                />
 
                 <Button onClick={refreshCategories}>
                     Refresh
@@ -55,6 +57,7 @@ export default function CategoryPage() {
             category={selectedCategory}
             open={isDrawerOpen}
             onOpenChange={setIsDrawerOpen}
+            onCategoryAdded={handleCategoryAdded}
         />
 
         {/* Get Category */}

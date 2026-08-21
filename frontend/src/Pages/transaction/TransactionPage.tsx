@@ -60,6 +60,7 @@ export default function TransactionPage() {
                 transaction={selectedTransaction}
                 open={isUpdateDrawerOpen}
                 onOpenChange={setIsUpdateDrawerOpen}
+                onTransactionAdded={handleTransactionAdded}
             />
         </div>
     );

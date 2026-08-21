@@ -30,11 +30,13 @@ import { getTransactionTypeApi } from "@/services/TransactionTypeService";
 import { type categoryType } from "../category/categoryType";
 import { getCategories } from "@/services/CategoryService";
 import { updateTransactionApi } from "@/services/TransactionService";
+import { toast } from "@/components/ui/toast";
 
 type UpdateTransactionProps = {
     transaction: Transaction | null;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    onTransactionAdded: () => void;
 };
 
 const formatTimestampForInput = (timestamp: string) => {
@@ -47,11 +49,11 @@ const formatTimestampForApi = (timestamp: string) => {
         : timestamp;
 };
 
-
 function UpdateTransaction({
     transaction,
     open,
     onOpenChange,
+    onTransactionAdded,
 }: UpdateTransactionProps) {
 
     const isMobile = useIsMobile();
@@ -126,6 +128,25 @@ function UpdateTransaction({
         loadCategory();
     }, [open]);
 
+    async function saveUpdateTransaction(
+        transactionId: string,
+        data: UpdateTransactionType)
+    {
+        const updateResponse = await updateTransactionApi(transactionId, data);
+
+        if (updateResponse.status === 204)
+        {
+                toast.add({
+                    type: "success",
+                    description: "Transaction updated successfully.",
+                });
+
+                onTransactionAdded();
+                return;     
+        }
+
+    }
+
     async function handleSaveButton() {
         if (!transaction) return;
 
@@ -159,12 +180,10 @@ function UpdateTransaction({
             description: updatedDescription,
         };
 
-        console.log("Update data:", data);
+        saveUpdateTransaction(transaction.transactionId, data)
 
-        await updateTransactionApi(transaction.transactionId, data);
     }
 
-    
     return (
         <Drawer
             open={open}

@@ -19,12 +19,14 @@ type UpdateCategoryProps = {
     category: categoryType | null;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+     onCategoryAdded: () => void;
 };
 
 function updateCategory({
     category,
     open,
     onOpenChange,
+    onCategoryAdded
 }: UpdateCategoryProps) {
 
     const isMobile = useIsMobile();
@@ -49,8 +51,10 @@ function updateCategory({
         }
 
         console.log(data);
-        
+
         await updateCategoryApi(category.categoryId, data)
+        onCategoryAdded();
+        return;
     }
 
     useEffect(() => {
@@ -85,7 +89,6 @@ function updateCategory({
                 <div className="flex-1 p-6">
                     { category && (
                         
-
                         <div className="space-y-4">
                             {/* Category */}
                             <div>
@@ -99,10 +102,11 @@ function updateCategory({
                                 />
                             </div>
 
-                            <div>
-                                <p className="mb-1">Type:</p>
+                            <div >
+                                <p className="mb-1">Icon <CategoryIcons iconId={Number(updatedCategoryIconId)} /></p><br />
 
                                 <CategoryIcons
+                                    size={30}
                                     onSelect={(iconId) => {
                                      handleIconClick(iconId)
                                     }}
